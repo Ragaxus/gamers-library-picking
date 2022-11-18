@@ -1,0 +1,23 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+main.submissionForm {
+  display: flex;
+  flex-direction: column;
+}
+
+div.labeledInput {
+    display: grid;
+    grid-template-columns: max-content max-content;
+    grid-gap: 5px;
+}
+
+div.labeledInput label { 
+  text-align: right; 
+}

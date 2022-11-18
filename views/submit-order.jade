@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  p #{title}
+  form(method="post", action="/submit-order")
+    div.labeledInput
+      label Customer Name: 
+      input(type="text",name="customer_name")#customerName
+    div.labeledInput
+      label Cards: 
+      textarea(name="cards")#cardList
+    button.submit Submit Order
