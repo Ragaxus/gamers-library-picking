@@ -55,8 +55,7 @@ router.get('/view-orders', async function (req, res) {
     order.updated_at = format.asString('MM/dd/yyyy', order.updated_at);
     return order;
   });
-  res.render('view-orders', {
-    title: 'View Orders',
+  res.renderVue('view-orders', {
     orders: orders
   });
 });

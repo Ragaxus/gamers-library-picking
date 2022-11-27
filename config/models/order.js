@@ -9,8 +9,8 @@ const connection = mongoose.createConnection(process.env.DB_CONN_STRING);
 var orderSchema = new Schema({
     customer_name: String,
     cards: Array,
-    completed: { type: Boolean, default: false },
-    updated_at: { type: Date, default: Date.now }
+    created_date: { type: Date, default: Date.now },
+    status: {type: String, default: 'new' }
 });
 
 connection.model('Order', orderSchema);
