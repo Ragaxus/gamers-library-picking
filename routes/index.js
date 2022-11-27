@@ -4,30 +4,61 @@ var express = require('express');
 var router = express.Router();
 
 //Mongoose
-var {connection} = require('../config/models/order');
+var {
+  connection
+} = require('../config/models/order');
 var Order = connection.model('Order');
 
-router.get('/submit', function(req, res, next) {
-  res.render('submit-order', {title: 'Submit Order'})
+//All current cards -- read from file which is updated out of band
+const fs = require('fs');
+var allCardNames;
+fs.readFile('./default-cards.json', 'utf8', (err, data) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const defaultCards = JSON.parse(data);
+  allCardNames = defaultCards.map(card => card.name).sort();
 });
 
-router.post('/submit-order', function(req, res){
-    var newOrder = req.body;
-    var cards = newOrder.cards;
-    newOrder.cards = cards.split('\r\n');
-    Order.create(newOrder, function(err, todo){
-        if(err) res.render('error', { title: 'Error creating your order :('})
-        res.redirect('/submit');
-    });
+router.get('/submit', function (req, res, next) {
+  const data = {
+    order: {
+      customer_name: "",
+      cards: []
+    },
+    new_item: {
+      new_item_quantity: 0,
+      new_item_name: ""
+    },
+    card_names: allCardNames
+  };
+  res.renderVue('submit-order', data);
 });
 
-router.get('/view-orders', async function(req, res){
+router.post('/submit-order', function (req, res) {
+  var newOrder = req.body;
+  Order.create(newOrder, function (err, todo) {
+    if (err) res.renderVue('error.vue', {
+      title: 'Error creating your order :('
+    })
+    res.redirect('/submit');
+  });
+});
+
+router.get('/view-orders', async function (req, res) {
   var oneMonthAgo = new Date();
   oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-  oneMonthAgo.setHours(0,0,0,0);
+  oneMonthAgo.setHours(0, 0, 0, 0);
   var orders = await Order.find({}).where('updated_at').gt(oneMonthAgo).lean();
-  orders = orders.map(order => { order.updated_at = format.asString('MM/dd/yyyy', order.updated_at); return order; });
-  res.render('view-orders', {title: 'View Orders', orders: orders});
+  orders = orders.map(order => {
+    order.updated_at = format.asString('MM/dd/yyyy', order.updated_at);
+    return order;
+  });
+  res.render('view-orders', {
+    title: 'View Orders',
+    orders: orders
+  });
 });
 
 

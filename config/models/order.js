@@ -4,7 +4,6 @@ var mongoose = require('mongoose'),
 require('dotenv').config();
 
 const connection = mongoose.createConnection(process.env.DB_CONN_STRING);
-console.log("created conn in order.js");
 
 // order model
 var orderSchema = new Schema({
