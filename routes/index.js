@@ -1,5 +1,4 @@
-var format = require('date-format');
-
+const axios = require('axios');
 var express = require('express');
 var router = express.Router();
 
@@ -21,7 +20,7 @@ fs.readFile('./default-cards.json', 'utf8', (err, data) => {
   allCardNames = defaultCards.map(card => card.name).sort();
 });
 
-router.get('/submit', function (req, res, next) {
+router.get('/submit-order', function (req, res, next) {
   const data = {
     order: {
       customer_name: "",
@@ -36,28 +35,54 @@ router.get('/submit', function (req, res, next) {
   res.renderVue('submit-order', data);
 });
 
-router.post('/submit-order', function (req, res) {
+
+router.get('/view-orders', async function (req, res) {
+  var orders = await Order.find({}).where('status').ne('sold').lean();
+  res.renderVue('view-orders', {
+    orders: orders,
+    search_criteria: {
+      showSoldOrders: false
+    }
+  });
+});
+
+router.get('/order', async function (req, res) {
+  try {
+    const search_params = req.query;
+    if (search_params.showSoldOrders === 'false') allOrders = await Order.where('status').ne('sold').lean();
+    else allOrders = await Order.find({}).lean();
+    res.send(allOrders);
+  } catch (error) {
+    res.statusCode = 400;
+    res.send({"error": error.stack})
+  }
+});
+
+router.post('/order', function (req, res) {
   var newOrder = req.body;
   Order.create(newOrder, function (err, todo) {
     if (err) res.renderVue('error.vue', {
       title: 'Error creating your order :('
     })
-    res.redirect('/submit');
   });
+  res.send('succeeded');
 });
 
-router.get('/view-orders', async function (req, res) {
-  var oneMonthAgo = new Date();
-  oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-  oneMonthAgo.setHours(0, 0, 0, 0);
-  var orders = await Order.find({}).where('updated_at').gt(oneMonthAgo).lean();
-  orders = orders.map(order => {
-    order.updated_at = format.asString('MM/dd/yyyy', order.updated_at);
-    return order;
-  });
-  res.renderVue('view-orders', {
-    orders: orders
-  });
+router.put('/order/:orderId', async function (req, res) {
+  const order = await Order.findByIdAndUpdate(req.params.orderId, req.body);
+  res.send('succeeded');
+});
+
+router.get('/order/:orderId/setinfo', async function (req, res) {
+  var allCardsUrl;
+  axios.get('https://api.scryfall.com/bulk-data')
+    .then(response => {
+      console.log(response.data.url);
+      console.log(response.data.explanation);
+    })
+    .catch(error => {
+      console.log(error);
+    });
 });
 
 

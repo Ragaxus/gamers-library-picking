@@ -59,7 +59,7 @@ export default {
             this.order.cards.splice(itemIdx, 1);
         },
         submit() {
-            axios.post('/submit-order', this.order).then(res => {
+            axios.post('/order', this.order).then(res => {
                 alert("Submitted");
                 this.order.cards = [];
                 this.order.name = "";

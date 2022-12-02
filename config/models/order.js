@@ -10,7 +10,7 @@ var orderSchema = new Schema({
     customer_name: String,
     cards: Array,
     created_date: { type: Date, default: Date.now },
-    status: {type: String, default: 'new' }
+    status: {type: String, default: 'placed' }
 });
 
 connection.model('Order', orderSchema);

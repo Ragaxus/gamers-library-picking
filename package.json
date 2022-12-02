@@ -17,7 +17,8 @@
     "http-errors": "~1.6.3",
     "jade": "^0.29.0",
     "mongoose": "^6.7.2",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "vue-mq": "^1.0.1"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
