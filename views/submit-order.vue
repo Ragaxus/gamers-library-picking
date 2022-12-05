@@ -8,13 +8,15 @@ export default {
         return {
             order: {
                 customer_name: "",
-                cards: []
+                cards: [],
+                comment: ""
             },
             new_item: {
                 new_item_quantity: 0,
                 new_item_name: ""
             },
-            card_names: []
+            card_names: [],
+            mass_entry: ''
         } // Overwritten by renderVue in routes file 
     },
     components: { OrderEntry: OrderEntry },
@@ -66,9 +68,7 @@ export default {
             });
         },
         massEntry() {
-            var txtMassEntry = document.getElementById("txtMassEntry")
-            var massEntryVal = txtMassEntry.value;
-            var entriesAsText = massEntryVal.split("\n");
+            var entriesAsText = this.mass_entry.split("\n");
             const re = /((\d+) )?(.*)/
             var entries = entriesAsText.map(e => {
                 var found = e.match(re);
@@ -100,8 +100,12 @@ export default {
             <button @click="addItem" :disabled='this.new_item_name == ""'>+</button>
         </div>
         <div id="massEntry">
-            <textarea id="txtMassEntry"></textarea>
+            <textarea id="txtMassEntry" v-model="mass_entry"></textarea>
             <button @click="massEntry"> Process </button>
+        </div>
+        <div id="comment">
+            <label for="comment">Additional notes: </label>
+            <textarea id="txtComment" v-model="order.comment"></textarea>
         </div>
         <button @click="submit" :disabled=orderIsInvalid>Submit Order</button>
     </div>

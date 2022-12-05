@@ -7,7 +7,7 @@ export default {
         return {
             orders: [],
             search_criteria: {
-                showSoldOrders: false
+                showInactiveOrders: false
             }
         }
     },
@@ -19,7 +19,7 @@ export default {
         search() {
             var vue = this;
             console.log(this.search_criteria)
-            axios.get(`/order`, {params: this.search_criteria}).then(function (response) {
+            axios.get(`/order`, { params: this.search_criteria }).then(function (response) {
                 console.log(response.data)
                 vue.orders = response.data;
             });
@@ -31,8 +31,9 @@ export default {
 <template>
     <div id="vue-view-orders">
         <div class="search-bar">
-            <input v-model="search_criteria.showSoldOrders" type="checkbox">Show sold orders</input>
-            <button @click="search">Search</button> 
+            <input id="show-inactive" v-model="search_criteria.showInactiveOrders" type="checkbox" />
+            <label for="show_inactive">Show sold and cancelled orders</label>
+            <button @click="search">Search</button>
         </div>
         <div class="order-list">
             <Order v-for="(order, index) in orders" :key="index" :info="order" :id="index"
