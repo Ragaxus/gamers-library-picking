@@ -13,8 +13,8 @@ export default {
     },
     components: { Order: Order },
     methods: {
-        updateStatus(_id, new_status) {
-            axios.put(`/order/${_id}`, { "status": new_status });
+        updateOrderInfo(_id, order_info) {
+            axios.put(`/order/${_id}`, order_info);
         },
         search() {
             var vue = this;
@@ -37,7 +37,7 @@ export default {
         </div>
         <div class="order-list">
             <Order v-for="(order, index) in orders" :key="index" :info="order" :id="index"
-                @update-status="updateStatus"></Order>
+                @update-order-info="updateOrderInfo"></Order>
         </div>
     </div>
 </template>

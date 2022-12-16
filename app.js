@@ -3,6 +3,9 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var session = require('express-session');
+var passport = require('passport');
+var SQLiteStore = require('connect-sqlite3')(session);
 
 var mongoose = require('mongoose');
 
@@ -35,8 +38,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(session({
+  secret: 'well you know what they say',
+  resave: false,
+  saveUninitialize: false,
+  store: new SQLiteStore({db: 'sessions.db', dir: './var/db'})
+}))
+app.use(passport.authenticate('session'));
+
 app.use('/', indexRouter);
-app.use('/submit', indexRouter);
 app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler

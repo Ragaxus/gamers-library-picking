@@ -2,6 +2,10 @@ const axios = require('axios');
 const fs = require('fs');
 var express = require('express');
 var router = express.Router();
+var bodyParser = require('body-parser');
+var passport = require('passport');
+var base64url = require('base64url');
+var GoogleStrategy = require('passport-google-oidc');
 
 //Mongoose
 var {
@@ -12,7 +16,7 @@ var {
   connection
 } = require('../config/models/card-metadata');
 var CardMetadata = connection.model('CardMetadata');
-
+var User = require('../config/models/user').connection.model('User');
 
 async function getActiveOrders() {
   return await Order.find({}).where('status').nin(['sold', 'cancelled']).lean();
@@ -29,7 +33,50 @@ fs.readFile('./default-cards.json', 'utf8', (err, data) => {
   allCardNames = defaultCards.map(card => card.name).sort();
 });
 
-router.get('/submit-order', function (req, res, next) {
+passport.use(new GoogleStrategy({
+  clientID: process.env['GOOGLE_CLIENT_ID'],
+  clientSecret: process.env['GOOGLE_CLIENT_SECRET'],
+  callbackURL: '/oauth2/redirect/google',
+  scope: ['https://www.googleapis.com/auth/userinfo.profile'],
+  passReqToCallback: true,
+}, function verify(req, issuer, profile, cb) {
+  return cb(null, {
+    name: profile.displayName
+  }, {
+    originalUrl: req.originalUrl
+  });
+}));
+
+passport.serializeUser(function (user, cb) {
+  process.nextTick(function () {
+    cb(null, {
+      id: user.id,
+      username: user.username,
+      name: user.name
+    })
+  });
+});
+
+passport.deserializeUser(function (user, cb) {
+  process.nextTick(function () {
+    return cb(null, user);
+  });
+});
+
+router.get('/oauth2/redirect/google', 
+  passport.authenticate('google', { failureRedirect: '/login'}),
+  function (req, res) {
+    var state = req.authInfo.state;
+    res.redirect(state.lastUrl || '/');
+  }
+  );
+
+function isAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) return next();
+  passport.authenticate('google', {state: {lastUrl: req.originalUrl}})(req, res, next);
+}
+
+router.get('/submit-order', isAuthenticated, function (req, res, next) {
   const data = {
     order: {
       customer_name: "",
@@ -45,18 +92,18 @@ router.get('/submit-order', function (req, res, next) {
   res.renderVue('submit-order', data);
 });
 
-const color_lookup = { 
-                'L': "Land",
-                'C': "Colorless",
-                'M': "Multicolored",
-                'W': "White",
-                'U': "Blue",
-                'B': "Black",
-                'R': "Red",
-                'G': "Green"
-              }
+const color_lookup = {
+  'L': "Land",
+  'C': "Colorless",
+  'M': "Multicolored",
+  'W': "White",
+  'U': "Blue",
+  'B': "Black",
+  'R': "Red",
+  'G': "Green"
+}
 
-async function addCardMetadataToOrders (orders) {
+async function addCardMetadataToOrders(orders) {
   var order_info = orders.map(async function (order) {
     order_card_names = order.cards.map(card => card.name);
     card_metadata_docs = await CardMetadata.find({
@@ -73,8 +120,7 @@ async function addCardMetadataToOrders (orders) {
       if (card_doc) {
         card.sets = card_doc.sets;
         card.color = color_lookup[card_doc.color];
-      }
-      else {
+      } else {
         card.sets = []
         card.color = ""
       }

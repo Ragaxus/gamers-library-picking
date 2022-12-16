@@ -11,7 +11,8 @@ var orderSchema = new Schema({
     cards: Array,
     created_date: { type: Date, default: Date.now },
     status: {type: String, default: 'placed' },
-    comment: {type: String, default: ''}
+    comment: {type: String, default: ''},
+    cards_found: Array
 });
 
 connection.model('Order', orderSchema);
