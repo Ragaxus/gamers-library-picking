@@ -1,6 +1,26 @@
 <script>
 export default {
-    props: ['info', 'id'],
+    props: ['info', 'id', 'toPick'],
+    data() {
+        return {
+            showFound: true
+        }
+    },
+    computed: {
+        missingCards() {
+            var missingCards = [];
+            var info = this.info;
+            if (info.cards_found) {
+                info.cards.forEach(card => {
+                   var missing_card = structuredClone(card)
+                   var corresponding_found_card = info.cards_found.find(c => c.name == card.name);
+                   if (corresponding_found_card) missing_card.quantity -= corresponding_found_card.quantity;
+                   if (missing_card.quantity > 0) missingCards.push(missing_card);
+                });
+            return missingCards;
+            }
+        }
+    },
     methods: {
         updateStatus() {
             if (this.info.status == 'picked' && !this.info.cards_found) {
@@ -14,7 +34,7 @@ export default {
         orderCreatedTimestamp() {
             const created_date = new Date(this.info.created_date);
             return `${created_date.toLocaleDateString()} ${created_date.toLocaleTimeString()}`;
-        },
+        }
     }
 }
 </script>
@@ -42,16 +62,24 @@ export default {
                 </div>
             </div>
         </div>
-        <div v-if="info.cards_found" class="order-cards-found">
-            Cards found:
+        <div v-if="info.cards_found && showFound" class="order-cards-found">
+            <span>Cards found: <button @click="showFound = !showFound">Show missing</button> </span>
             <div v-for="card in info.cards_found" class="order-cards-found-card">
               <span v-if="!card.edit" @click="$set(card, 'edit', !card.edit)"> {{card.quantity}} {{card.name}} </span>
               <span v-if="card.edit"> <input v-model="card.quantity" /> {{card.name}} <button @click="$set(card, 'edit', !card.edit); updateOrderInfo()"> ✅ </button></span>
             </div>
         </div>
+        <div v-if="info.cards_found && !showFound" class="order-cards-missing">
+            <span>Cards missing: <button @click="showFound = !showFound">Show/edit found</button> </span>
+            <div v-for="card in missingCards" class="order-cards-missing-card">
+              <span> {{card.quantity}} {{card.name}} </span>
+            </div>
+        </div>
         <div class="order-view-comment">
             <p v-if="info.comment"> Notes: {{ info.comment }}</p>
         </div>
+        <label for="pick">Pick order</label>
+        <input id="pick" type="checkbox" v-bind="toPick" />
     </div>
 
 </template>
@@ -90,6 +118,7 @@ div.set-badge {
     background-color: #4b5257;
     color: white;
     border-radius: 2px;
+    padding: 2px;
 }
 
 div.set-badge img {

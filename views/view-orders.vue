@@ -1,6 +1,7 @@
 <script>
-import { axios as _axios2 } from "axios" // the reference to axios shows up as _axios2 on the client, idk why
+import axios, { axios as _axios2 } from "axios" // the reference to axios shows up as _axios2 on the client, idk why
 import Order from "../components/Order.vue"
+import PickLocations from "../components/PickLocations.vue"
 
 export default {
     data: function () {
@@ -11,7 +12,18 @@ export default {
             }
         }
     },
-    components: { Order: Order },
+    components: {
+        Order: Order,
+        PickLocations: PickLocations
+    },
+    computed: {
+        cardsToPick() {
+            return this.orders
+                .filter(order => order.toPick)
+                .map(order => order.cards)
+                .flat();
+        }
+    },
     methods: {
         updateOrderInfo(_id, order_info) {
             axios.put(`/order/${_id}`, order_info);
@@ -37,8 +49,9 @@ export default {
         </div>
         <div class="order-list">
             <Order v-for="(order, index) in orders" :key="index" :info="order" :id="index"
-                @update-order-info="updateOrderInfo"></Order>
+                @update-order-info="updateOrderInfo" v-model:toPick="order.toPick"></Order>
         </div>
+        <pick-locations :cards-to-pick="cardsToPick"></pick-locations>
     </div>
 </template>
 

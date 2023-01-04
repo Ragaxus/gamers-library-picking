@@ -6,6 +6,7 @@ var bodyParser = require('body-parser');
 var passport = require('passport');
 var base64url = require('base64url');
 var GoogleStrategy = require('passport-google-oidc');
+var BoxInventory = require('../utils/box-inventory');
 
 //Mongoose
 var {
@@ -141,6 +142,7 @@ router.get('/view-orders', async function (req, res) {
   });
 });
 
+
 router.get('/order', async function (req, res) {
   try {
     const search_params = req.query;
@@ -169,6 +171,53 @@ router.post('/order', function (req, res) {
 router.put('/order/:orderId', async function (req, res) {
   const order = await Order.findByIdAndUpdate(req.params.orderId, req.body);
   res.send('succeeded');
+});
+
+let setDirectory;
+let boxesData;
+
+fs.readFile('./utils/set_directory.json', 'utf8', (error, data) => {
+  if (error) {
+    console.error(error);
+    return;
+  }
+  // Parse the file contents as JSON
+  try {
+    setDirectory = JSON.parse(data);
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+});
+
+fs.readFile('./utils/boxes.json', 'utf8', (error, data) => {
+  if (error) {
+    console.error(error);
+    return;
+  }
+  // Parse the file contents as JSON
+  try {
+    boxesData = JSON.parse(data);
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+});
+
+  let boxInventory = new BoxInventory(setDirectory);
+  boxInventory.boxes = boxesData;
+
+
+router.get('/card-locations', async function (req, res) {
+  res.renderVue('pick-boxes', {
+    cardsToPick: req.cards,
+    boxIndex: {}
+  });
+});
+
+router.get('/box-locations', async function (req, res) {
+  let result = boxInventory.findCardsInBoxes(req.cards);
+  res.send(result);
 });
 
 module.exports = router;

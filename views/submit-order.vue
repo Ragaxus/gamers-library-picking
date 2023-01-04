@@ -108,6 +108,7 @@ export default {
             <textarea id="txtComment" v-model="order.comment"></textarea>
         </div>
         <button @click="submit" :disabled=orderIsInvalid>Submit Order</button>
+        <a href="/view-orders"> View existing orders</a>
     </div>
 </template>
 

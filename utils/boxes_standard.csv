@@ -1,0 +1,31 @@
+name,type,startName,startSet,endName,endSet
+4 (std),standard,Sanctum Plowbeast,ARB,Viridian Emissary,MBS
+5 (std),standard,Bladed Sentinel,MBS,Wild Beastmaster,RTR
+6 (std),standard,Archon of the Triumvirate,RTR,Wild Celebrants,THS
+7 (std),standard,Agent of Horizons,THS,Vial of Dragonfire,DTK
+8 (std),standard,Bane of Bala Ged,BFZ,Vessel of Ephemera,SOI
+9 (std),standard,Aberrant Researcher,SOI,Quilled Wolf,SOI
+10 (std),standard,Rabid Bite,SOI,Woodland Stream,KLD
+11 (std),standard,Aerial Modification,AER,Zealot of the God-Pharaoh,HOD
+12 (std),standard,Ambuscade,HOD,Wizard's Lightning,DOM
+13 (std),standard,Adventurous Impulse,DOM,Wall of Runes,WAR
+14 (std),standard,Aid the Fallen,WAR,"Yorvo, Lord of Garenbrig",ELD
+15 (std),standard,Arcanist's Owl,ELD,Zagoth Mamba,IKO
+16 (std),standard,Blazing Volley,IKO,Wayward Guide-Beast,ZNR
+17 (std),standard,Adventure Awaits,ZNR,Twinscroll Shaman,STX
+18 (std),standard,Accomplished Alchemist,STX,Forest,AFR
+19 (std),standard,Beloved Beggar,MID,Seven-Tail Mentor,NEO
+20 (std),standard,Sky-Blessed Samurai,NEO,Peerless Samurai,NEO
+21 (std),standard,Rabbit Battery,NEO,Swooping Protector,SNC
+22 (std),standard,A Little Chat,SNC,Heroic Charge,DMU
+23 (std),standard,Join Forces,DMU,Great Desert Prospector,BRO
+24 (std),standard,In the Trenches,BRO,Underground River,BRO
+2X2,supplemental,Abzan Falconer,2X2,Simic Growth Chamber,2X2
+MH1 1,supplemental,Azra Smokeshaper,MH1,Universal Automaton,MH1
+TSR #1,supplemental,Amrou Scout,TSR,Yixlid Jailer,TSR
+TSR #2,supplemental,"Akroma, Angel of Fury",TSR,Urza's Factory,TSR
+MMQ,supplemental,Muzzle,MMQ,High Market,MMQ
+MH2 #1,supplemental,Abiding Grace,MH2,Persist,MH2
+MH2 #2,supplemental,Profane Tutor,MH2,Yavimaya Elder,MH2
+MH2 #3,supplemental,Arcbound Shikari,MH2,Thornglint Bridge,MH2
+2 (supp),supplemental,Answered Prayers,MH1,Winter's Rest,MH1

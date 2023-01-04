@@ -927,3 +927,5 @@ public/images/set-icons/zen.svg
 public/images/set-icons/znc.svg
 public/images/set-icons/zne.svg
 public/images/set-icons/znr.svg
+prod.env
+var/db/sessions.db

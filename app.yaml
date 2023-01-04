@@ -1,0 +1,5 @@
+runtime: nodejs16
+env_variables:
+  DB_CONN_STRING: "mongodb://127.0.0.1:27017/gamers-library-picks?readPreference=primary&directConnection=true&ssl=false"
+  GOOGLE_CLIENT_ID: "548927711143-jdd51mlfahp6faou5e12g823hfavpf92.apps.googleusercontent.com"
+  GOOGLE_CLIENT_SECRET: "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"
