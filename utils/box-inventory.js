@@ -68,6 +68,7 @@ class BoxInventory {
 
     findCardsInBoxes(cards) {
         var result = {}
+        if (!cards) return result;
         cards.forEach((card, cardIdx) => {
             card.sets.forEach(set => {
                 var set_type = this.getSetType(set);

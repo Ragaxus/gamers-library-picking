@@ -1,9 +1,17 @@
 <script>
 export default {
-    props: ['info', 'id', 'toPick'],
+    props: {
+        info: {
+            type: Object
+        },
+        id: {
+            type: Number
+        }
+    },
     data() {
         return {
-            showFound: true
+            showFound: true,
+            toPick: false
         }
     },
     computed: {
@@ -30,6 +38,9 @@ export default {
         },
         updateOrderInfo() {
             this.$emit('update-order-info', this.info._id, this.info)
+        },
+        updatePicks() {
+            this.$emit('update-picks', this.info._id, this.toPick)
         },
         orderCreatedTimestamp() {
             const created_date = new Date(this.info.created_date);
@@ -79,7 +90,7 @@ export default {
             <p v-if="info.comment"> Notes: {{ info.comment }}</p>
         </div>
         <label for="pick">Pick order</label>
-        <input id="pick" type="checkbox" v-bind="toPick" />
+        <input id="pick" type="checkbox" v-model="toPick" @change="updatePicks()"/>
     </div>
 
 </template>

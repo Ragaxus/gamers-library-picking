@@ -29,7 +29,7 @@ fs.readFile('boxes.json', 'utf8', (error, data) => {
   let result = boxInventory.findCardsInBoxes([
     {
         name: "Abzan Falconer",
-        sets: ["2X2", "KTK"],
+        sets: ["2x2", "ktk"],
         color: "W"
     }
   ]);

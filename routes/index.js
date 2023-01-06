@@ -126,6 +126,7 @@ async function addCardMetadataToOrders(orders) {
         card.color = ""
       }
     });
+    order.toPick = false;
     return order;
   });
   return await Promise.all(order_info);
@@ -173,39 +174,12 @@ router.put('/order/:orderId', async function (req, res) {
   res.send('succeeded');
 });
 
-let setDirectory;
-let boxesData;
+let setDirectory = JSON.parse(fs.readFileSync('./utils/set_directory.json', {encoding: 'utf8'}));
 
-fs.readFile('./utils/set_directory.json', 'utf8', (error, data) => {
-  if (error) {
-    console.error(error);
-    return;
-  }
-  // Parse the file contents as JSON
-  try {
-    setDirectory = JSON.parse(data);
-  } catch (error) {
-    console.error(error);
-    return;
-  }
-});
+let boxesData = JSON.parse(fs.readFileSync('./utils/boxes.json', {encoding:'utf8'}));
 
-fs.readFile('./utils/boxes.json', 'utf8', (error, data) => {
-  if (error) {
-    console.error(error);
-    return;
-  }
-  // Parse the file contents as JSON
-  try {
-    boxesData = JSON.parse(data);
-  } catch (error) {
-    console.error(error);
-    return;
-  }
-});
-
-  let boxInventory = new BoxInventory(setDirectory);
-  boxInventory.boxes = boxesData;
+let boxInventory = new BoxInventory(setDirectory);
+boxInventory.boxes = boxesData;
 
 
 router.get('/card-locations', async function (req, res) {
@@ -215,8 +189,8 @@ router.get('/card-locations', async function (req, res) {
   });
 });
 
-router.get('/box-locations', async function (req, res) {
-  let result = boxInventory.findCardsInBoxes(req.cards);
+router.post('/box-locations', async function (req, res) {
+  let result = boxInventory.findCardsInBoxes(req.body.cards);
   res.send(result);
 });
 

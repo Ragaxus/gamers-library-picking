@@ -3,12 +3,12 @@
         "type": "core",
         "startCard": {
             "name": "Keldon Warlord",
-            "set": "LEA",
+            "set": "lea",
             "color": "R"
         },
         "endCard": {
             "name": "Reliquary Tower",
-            "set": "M13",
+            "set": "m13",
             "color": "L"
         }
     },
@@ -17,12 +17,12 @@
         "type": "core",
         "startCard": {
             "name": "Ajani's Pridemate",
-            "set": "M15",
+            "set": "m15",
             "color": "W"
         },
         "endCard": {
             "name": "Walking Corpse",
-            "set": "M19",
+            "set": "m19",
             "color": "B"
         }
     },
@@ -31,12 +31,12 @@
         "type": "core",
         "startCard": {
             "name": "Act of Treason",
-            "set": "M19",
+            "set": "m19",
             "color": "R"
         },
         "endCard": {
             "name": "Sure Strike",
-            "set": "M21",
+            "set": "m21",
             "color": "R"
         }
     },
@@ -45,54 +45,54 @@
         "type": "core",
         "startCard": {
             "name": "Thrill of Possibility",
-            "set": "M21",
+            "set": "m21",
             "color": "R"
         },
         "endCard": {
             "name": "Wind-Scarred Crag",
-            "set": "M21",
+            "set": "m21",
             "color": "L" 
         }
     },
     {
         "name": "1 (std)",
-        "type": "Standard",
+        "type": "standard",
         "startCard": {
             "name": "Wyluli Wolf",
-            "set": "ARN",
+            "set": "arn",
             "color": "G"
         },
         "endCard": {
             "name": "Brass Secretary",
-            "set": "UDS",
+            "set": "uds",
             "color": "C"
         }
     },
     {
         "name": "2 (std)",
-        "type": "Standard",
+        "type": "standard",
         "startCard": {
             "name": "Arrest",
-            "set": "MMQ",
+            "set": "mmq",
             "color": "W"
         },
         "endCard": {
             "name": "Temple of the False God",
-            "set": "SCG",
+            "set": "scg",
             "color": "L"
         }
     },
     {
         "name": "3 (std)",
-        "type": "Standard",
+        "type": "standard",
         "startCard": {
             "name": "Altar's Light",
-            "set": "MDN",
+            "set": "mrd",
             "color": "W"
         },
         "endCard": {
             "name": "Rhox Brute",
-            "set": "ARB",
+            "set": "arb",
             "color": "M"
         }
     },
@@ -101,12 +101,12 @@
         "type": "standard",
         "startCard": {
             "name": "Sanctum Plowbeast",
-            "set": "ARB",
+            "set": "arb",
             "color": "M"
         },
         "endCard": {
             "name": "Viridian Emissary",
-            "set": "MBS",
+            "set": "mbs",
             "color": "G"
         }
     },
@@ -115,12 +115,12 @@
         "type": "standard",
         "startCard": {
             "name": "Bladed Sentinel",
-            "set": "MBS",
+            "set": "mbs",
             "color": "C"
         },
         "endCard": {
             "name": "Wild Beastmaster",
-            "set": "RTR",
+            "set": "rtr",
             "color": "G"
         }
     },
@@ -129,12 +129,12 @@
         "type": "standard",
         "startCard": {
             "name": "Archon of the Triumvirate",
-            "set": "RTR",
+            "set": "rtr",
             "color": "M"
         },
         "endCard": {
             "name": "Wild Celebrants",
-            "set": "THS",
+            "set": "ths",
             "color": "G"
         }
     },
@@ -143,12 +143,12 @@
         "type": "standard",
         "startCard": {
             "name": "Agent of Horizons",
-            "set": "THS",
+            "set": "ths",
             "color": "G"
         },
         "endCard": {
             "name": "Vial of Dragonfire",
-            "set": "DTK",
+            "set": "dtk",
             "color": "C"
         }
     },
@@ -157,12 +157,12 @@
         "type": "standard",
         "startCard": {
             "name": "Bane of Bala Ged",
-            "set": "BFZ",
+            "set": "bfz",
             "color": "C"
         },
         "endCard": {
             "name": "Vessel of Ephemera",
-            "set": "SOI",
+            "set": "soi",
             "color": "W"
         }
     },
@@ -171,12 +171,12 @@
         "type": "standard",
         "startCard": {
             "name": "Aberrant Researcher",
-            "set": "SOI",
+            "set": "soi",
             "color": "U"
         },
         "endCard": {
             "name": "Quilled Wolf",
-            "set": "SOI",
+            "set": "soi",
             "color": "G"
         }
     },
@@ -185,12 +185,12 @@
         "type": "standard",
         "startCard": {
             "name": "Rabid Bite",
-            "set": "SOI",
+            "set": "soi",
             "color": "G"
         },
         "endCard": {
             "name": "Woodland Stream",
-            "set": "KLD",
+            "set": "kld",
             "color": "L"
         }
     },
@@ -199,12 +199,12 @@
         "type": "standard",
         "startCard": {
             "name": "Aerial Modification",
-            "set": "AER",
+            "set": "aer",
             "color": "W"
         },
         "endCard": {
             "name": "Zealot of the God-Pharaoh",
-            "set": "HOD",
+            "set": "hod",
             "color": "R"
         }
     },
@@ -213,12 +213,12 @@
         "type": "standard",
         "startCard": {
             "name": "Ambuscade",
-            "set": "HOU",
+            "set": "hou",
             "color": "G"
         },
         "endCard": {
             "name": "Wizard's Lightning",
-            "set": "DOM",
+            "set": "dom",
             "color": "R"
         }
     },
@@ -227,12 +227,12 @@
         "type": "standard",
         "startCard": {
             "name": "Adventurous Impulse",
-            "set": "DOM",
+            "set": "dom",
             "color": "G"
         },
         "endCard": {
             "name": "Wall of Runes",
-            "set": "WAR",
+            "set": "war",
             "color": "U"
         }
     },
@@ -241,12 +241,12 @@
         "type": "standard",
         "startCard": {
             "name": "Aid the Fallen",
-            "set": "WAR",
+            "set": "war",
             "color": "B"
         },
         "endCard": {
             "name": "Yorvo, Lord of Garenbrig",
-            "set": "ELD",
+            "set": "eld",
             "color": "G"
         }
     },
@@ -255,12 +255,12 @@
         "type": "standard",
         "startCard": {
             "name": "Arcanist's Owl",
-            "set": "ELD",
+            "set": "eld",
             "color": "M"
         },
         "endCard": {
             "name": "Zagoth Mamba",
-            "set": "IKO",
+            "set": "iko",
             "color": "B"
         }
     },
@@ -269,12 +269,12 @@
         "type": "standard",
         "startCard": {
             "name": "Blazing Volley",
-            "set": "IKO",
+            "set": "iko",
             "color": "R"
         },
         "endCard": {
             "name": "Wayward Guide-Beast",
-            "set": "ZNR",
+            "set": "znr",
             "color": "R"
         }
     },
@@ -283,12 +283,12 @@
         "type": "standard",
         "startCard": {
             "name": "Adventure Awaits",
-            "set": "ZNR",
+            "set": "znr",
             "color": "G"
         },
         "endCard": {
             "name": "Twinscroll Shaman",
-            "set": "STX",
+            "set": "stx",
             "color": "R"
         }
     },
@@ -297,12 +297,12 @@
         "type": "standard",
         "startCard": {
             "name": "Accomplished Alchemist",
-            "set": "STX",
+            "set": "stx",
             "color": "G"
         },
         "endCard": {
             "name": "Forest",
-            "set": "AFR",
+            "set": "afr",
             "color": "L"
         }
     },
@@ -311,12 +311,12 @@
         "type": "standard",
         "startCard": {
             "name": "Beloved Beggar",
-            "set": "MID",
+            "set": "mid",
             "color": "W"
         },
         "endCard": {
             "name": "Seven-Tail Mentor",
-            "set": "NEO",
+            "set": "neo",
             "color": "W"
         }
     },
@@ -325,12 +325,12 @@
         "type": "standard",
         "startCard": {
             "name": "Sky-Blessed Samurai",
-            "set": "NEO",
+            "set": "neo",
             "color": "W"
         },
         "endCard": {
             "name": "Peerless Samurai",
-            "set": "NEO",
+            "set": "neo",
             "color": "R"
         }
     },
@@ -339,12 +339,12 @@
         "type": "standard",
         "startCard": {
             "name": "Rabbit Battery",
-            "set": "NEO",
+            "set": "neo",
             "color": "R"
         },
         "endCard": {
             "name": "Swooping Protector",
-            "set": "SNC",
+            "set": "snc",
             "color": "W"
         }
     },
@@ -353,12 +353,12 @@
         "type": "standard",
         "startCard": {
             "name": "A Little Chat",
-            "set": "SNC",
+            "set": "snc",
             "color": "U"
         },
         "endCard": {
             "name": "Heroic Charge",
-            "set": "DMU",
+            "set": "dmu",
             "color": "W"
         }
     },
@@ -367,12 +367,12 @@
         "type": "standard",
         "startCard": {
             "name": "Join Forces",
-            "set": "DMU",
+            "set": "dmu",
             "color": "W"
         },
         "endCard": {
             "name": "Great Desert Prospector",
-            "set": "BRO",
+            "set": "bro",
             "color": "W"
         }
     },
@@ -381,17 +381,17 @@
         "type": "standard",
         "startCard": {
             "name": "In the Trenches",
-            "set": "BRO",
+            "set": "bro",
             "color": "W"
         },
         "endCard": {
             "name": "Underground River",
-            "set": "BRO",
+            "set": "bro",
             "color": "L"
         }
     },
     {
-        "name": "2X2",
+        "name": "2x2",
         "type": "supplemental",
         "sets": ["2X2"]
     },
@@ -400,12 +400,12 @@
         "type": "supplemental",
         "startCard": {
             "name": "Azra Smokeshaper",
-            "set": "MH1",
+            "set": "mh1",
             "color": "B"
         },
         "endCard": {
             "name": "Universal Automaton",
-            "set": "MH1",
+            "set": "mh1",
             "color": "C"
         }
     },
@@ -414,12 +414,12 @@
         "type": "supplemental",
         "startCard": {
             "name": "Amrou Scout",
-            "set": "TSR",
+            "set": "tsr",
             "color": "W"
         },
         "endCard": {
             "name": "Yixlid Jailer",
-            "set": "TSR",
+            "set": "tsr",
             "color": "B"
         }
     },
@@ -428,26 +428,26 @@
         "type": "supplemental",
         "startCard": {
             "name": "Akroma, Angel of Fury",
-            "set": "TSR",
+            "set": "tsr",
             "color": "R"
         },
         "endCard": {
             "name": "Urza's Factory",
-            "set": "TSR",
+            "set": "tsr",
             "color": "L"
         }
     },
     {
-        "name": "MMQ",
+        "name": "mmq",
         "type": "standard",
         "startCard": {
             "name": "Muzzle",
-            "set": "MMQ",
+            "set": "mmq",
             "color": "W"
         },
         "endCard": {
             "name": "High Market",
-            "set": "MMQ",
+            "set": "mmq",
             "color": "L"
         }
     },
@@ -456,12 +456,12 @@
         "type": "supplemental",
         "startCard": {
             "name": "Abiding Grace",
-            "set": "MH2",
+            "set": "mh2",
             "color": "W"
         },
         "endCard": {
             "name": "Persist",
-            "set": "MH2",
+            "set": "mh2",
             "color": "B"
         }
     },
@@ -470,12 +470,12 @@
         "type": "supplemental",
         "startCard": {
             "name": "Profane Tutor",
-            "set": "MH2",
+            "set": "mh2",
             "color": "B"
         },
         "endCard": {
             "name": "Yavimaya Elder",
-            "set": "MH2",
+            "set": "mh2",
             "color": "G"
         }
     },
@@ -484,12 +484,12 @@
         "type": "supplemental",
         "startCard": {
             "name": "Arcbound Shikari",
-            "set": "MH2",
+            "set": "mh2",
             "color": "M"
         },
         "endCard": {
             "name": "Thornglint Bridge",
-            "set": "MH2",
+            "set": "mh2",
             "color": "L"
         }
     },
@@ -498,12 +498,12 @@
         "type": "supplemental",
         "startCard": {
             "name": "Answered Prayers",
-            "set": "MH1",
+            "set": "mh1",
             "color": "W"
         },
         "endCard": {
             "name": "Winter's Rest",
-            "set": "MH1",
+            "set": "mh1",
             "color": "U"
         }
     },
@@ -511,75 +511,76 @@
         "name": "Commander",
         "type": "supplemental",
         "sets": [
-            "CMA",
-            "CM2",
-            "C12",
-            "C13",
-            "C14",
-            "C15",
-            "C16",
-            "C17",
-            "C18",
-            "C19",
-            "C20",
-            "C21",
-            "AFC",
-            "KHC",
-            "ZNC",
-            "MIC",
-            "VOC",
-            "NEC"
+            "cma",
+            "cm2",
+            "c12",
+            "c13",
+            "c14",
+            "c15",
+            "c16",
+            "c17",
+            "c18",
+            "c19",
+            "c20",
+            "c21",
+            "afc",
+            "khc",
+            "znc",
+            "mic",
+            "voc",
+            "nec"
         ]
     },
     {
         "name": "1 (supp)",
         "type": "supplemental",
         "sets": [
-            "MM1",
-            "CON",
-            "MM2",
-            "EMA"
+            "mm1",
+            "con",
+            "mm2",
+            "ema"
         ]
     },
     {
         "name": "2 (supp)",
         "type": "supplemental",
         "sets": [
-            "CN2",
-            "MM3",
-            "IMA",
-            "M25",
-            "BBD",
-            "UMA"
+            "cn2",
+            "mm3",
+            "ima",
+            "m25",
+            "bbd",
+            "uma"
         ]
     },
     {
         "name": "J22",
         "type": "supplemental",
         "sets": [
-            "J22"
+            "j22"
         ]
     },
     {
         "name": "CLB",
         "type": "supplemental",
         "sets": [
-            "CLB"
+            "clb"
         ]
     },
     {
         "name": "Another MH2 box",
         "type": "supplemental",
         "sets": [
-            "MH2"
+            "mh2"
         ]
     },
     {
         "name": "Special crap from BRO",
         "type": "supplemental",
         "sets": [
-            "BOT",
-            "BRR"
+            "bot",
+            "brc",
+            "brr"
         ]
     }
 ]

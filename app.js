@@ -25,7 +25,10 @@ const vueOptions = {
         {script: "https://code.jquery.com/jquery-3.6.0.js"},
         {script: "https://code.jquery.com/ui/1.13.2/jquery-ui.js"},
         {style: "//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css"},
-        {script: "https://cdn.jsdelivr.net/npm/fuzzysort@2.0.4/fuzzysort.min.js"}
+        {script: "https://cdn.jsdelivr.net/npm/fuzzysort@2.0.4/fuzzysort.min.js"},
+        {style: "https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"},
+        {script: "https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"}
+
       ]
     }}
 };

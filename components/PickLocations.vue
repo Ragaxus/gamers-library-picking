@@ -1,7 +1,6 @@
 <script>
-import axios, { axios as _axios2 } from "axios"
 export default {
-    props: ["cards-to-pick"],
+    props: ["cardstopick"],
     data: function () {
         return {
             boxIndex: {}
@@ -9,8 +8,8 @@ export default {
     },
     methods: {
         updateBoxIndex() {
-            axios.get(`/box-locations`, { data: { cards: cardsToPick } }).then(response => {
-                this.boxIndex = response;
+            axios.post(`/box-locations`, { cards: this.cardstopick }).then(response => {
+                this.boxIndex = response.data;
             });
         }
     },
