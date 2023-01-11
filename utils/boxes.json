@@ -393,7 +393,7 @@
     {
         "name": "2x2",
         "type": "supplemental",
-        "sets": ["2X2"]
+        "sets": ["2x2"]
     },
     {
         "name": "MH1 1",
@@ -530,6 +530,11 @@
             "voc",
             "nec"
         ]
+    },
+    {
+        "name": "Commander Legends (CMR)",
+        "type": "supplemental",
+        "sets": [ "cmr" ]
     },
     {
         "name": "1 (supp)",

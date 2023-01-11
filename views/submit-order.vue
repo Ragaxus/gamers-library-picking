@@ -71,17 +71,20 @@ export default {
             var entriesAsText = this.mass_entry.split("\n");
             const re = /((\d+) )?(.*)/
             var entries = entriesAsText.map(e => {
+                console.log(e);
                 var found = e.match(re);
                 if (found) {
                     var quantity = found[2];
                     if (!quantity) quantity = 1;
-                    var name = found[3];
+                    var entered_name = found[3];
+                    const name = fuzzysort.go(entered_name, this.card_names, { limit: 1, threshold: -100 })
+                    .map(r => r.target)[0];
                     return {quantity, name};
                 }
                 else { return null; }
             }).filter(e => e !== null);
             this.order.cards.push.apply(this.order.cards, entries);
-            txtMassEntry.value = "";
+            this.mass_entry = "";
         }
     }
 }

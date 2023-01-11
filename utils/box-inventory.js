@@ -67,8 +67,9 @@ class BoxInventory {
 
 
     findCardsInBoxes(cards) {
-        var result = {}
+        var result = []
         if (!cards) return result;
+        var boxIndex = {};
         cards.forEach((card, cardIdx) => {
             card.sets.forEach(set => {
                 var set_type = this.getSetType(set);
@@ -83,12 +84,45 @@ class BoxInventory {
                 this.boxes.filter(box => box.type == set_type).forEach(box => {
                     if (this.boxHasCard(box, card_info)) {
                         var name = box.name;
-                        if (name in result) result[name].push(cardIdx);
-                        else result[name] = [cardIdx];
+                        if (!(name in boxIndex)) {boxIndex[name] = [];}
+                        boxIndex[name].push(card_info);
                     }
                 })
             });
         });
+
+        Object.entries(boxIndex).forEach(boxEntry => {
+            let box_name = boxEntry[0];
+            let cards_in_box = boxEntry[1];
+            var set_and_color_index = {}; 
+            set_and_color_index = cards_in_box.reduce((acc, card) => {
+                if (!(card.set in acc)) {
+                    acc[card.set] = {};
+                }
+                if (!(card.color in acc[card.set])) {
+                    acc[card.set][card.color] = [];
+                }
+                acc[card.set][card.color].push(card.name);
+                return acc;
+            }, {});
+            let set_order = Object.entries(this.setDirectory)
+            .map(e => {return e[1]})
+            .flat();
+            let cards_by_set = Object.entries(set_and_color_index)
+            .map(sc_entry => {
+                let cards_by_color = Object.entries(sc_entry[1])
+                .map(c_entry => {
+                    cards = c_entry[1].sort();
+                    return {color: c_entry[0], cards} })
+                .sort((ca, cb) => {
+                    let order = SortableCard.colorOrder;
+                    return order.indexOf(ca) - order.indexOf(cb);
+                });
+                return {set: sc_entry[0], cards_by_color};
+            })
+            .sort((sca, scb) => { return set_order.indexOf(sca.set) - set_order.indexOf(scb.set) } );
+            result.push({box_name, cards_by_set});
+        })
         return result;
     }
 }

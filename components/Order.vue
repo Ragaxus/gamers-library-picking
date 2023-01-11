@@ -1,4 +1,6 @@
 <script>
+import SetBadge from "../components/SetBadge.vue"
+
 export default {
     props: {
         info: {
@@ -7,6 +9,9 @@ export default {
         id: {
             type: Number
         }
+    },
+    components: {
+        SetBadge: SetBadge
     },
     data() {
         return {
@@ -31,7 +36,8 @@ export default {
     },
     methods: {
         updateStatus() {
-            if (this.info.status == 'picked' && !this.info.cards_found) {
+            console.log(this.info.status);
+            if (this.info.status == 'picked' && this.info.cards_found == 0) {
                 this.info.cards_found = JSON.parse(JSON.stringify(this.info.cards)) //deep copy
             }
             this.$emit('update-order-info', this.info._id, this.info)
@@ -66,10 +72,7 @@ export default {
             <div v-for="card in info.cards" class="order-view-card">
                 {{ card.quantity }} {{ card.name }} ({{ card.color }})
                 <div class="set-badges">
-                    <div v-for="set in card.sets" class="set-badge">
-                        <img :src="`/images/set-icons/${set}.svg`" />
-                        <span> {{ set.toUpperCase() }}</span>
-                    </div>
+                    <set-badge v-for="set in card.sets" :set="set"></set-badge>
                 </div>
             </div>
         </div>
@@ -116,25 +119,4 @@ div.status-cancelled {
     color: #fff;
 }
 
-div.set-badges {
-    display: flex;
-    overflow-x: auto;
-
-}
-
-div.set-badge {
-    flex: none;
-    font-size: 15px;
-    margin-right: 5px;
-    background-color: #4b5257;
-    color: white;
-    border-radius: 2px;
-    padding: 2px;
-}
-
-div.set-badge img {
-    height: 15px;
-    vertical-align: top;
-    filter: invert(92%) sepia(100%) saturate(0%) hue-rotate(202deg) brightness(106%) contrast(106%);
-}
 </style>
