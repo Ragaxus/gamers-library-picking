@@ -16,7 +16,20 @@ export default {
     data() {
         return {
             showFound: true,
-            toPick: false
+            toPick: false,
+            color_lookup: {}
+        }
+    },
+    mounted() {
+        this.color_lookup = {
+            'L': "Land",
+            'C': "Colorless",
+            'M': "Multicolored",
+            'W': "White",
+            'U': "Blue",
+            'B': "Black",
+            'R': "Red",
+            'G': "Green"
         }
     },
     computed: {
@@ -25,12 +38,12 @@ export default {
             var info = this.info;
             if (info.cards_found) {
                 info.cards.forEach(card => {
-                   var missing_card = structuredClone(card)
-                   var corresponding_found_card = info.cards_found.find(c => c.name == card.name);
-                   if (corresponding_found_card) missing_card.quantity -= corresponding_found_card.quantity;
-                   if (missing_card.quantity > 0) missingCards.push(missing_card);
+                    var missing_card = structuredClone(card)
+                    var corresponding_found_card = info.cards_found.find(c => c.name == card.name);
+                    if (corresponding_found_card) missing_card.quantity -= corresponding_found_card.quantity;
+                    if (missing_card.quantity > 0) missingCards.push(missing_card);
                 });
-            return missingCards;
+                return missingCards;
             }
         }
     },
@@ -70,7 +83,7 @@ export default {
         </div>
         <div class="order-cards-ordered">
             <div v-for="card in info.cards" class="order-view-card">
-                {{ card.quantity }} {{ card.name }} ({{ card.color }})
+                {{ card.quantity }} {{ card.name }} ({{ color_lookup[card.color] }})
                 <div class="set-badges">
                     <set-badge v-for="set in card.sets" :set="set"></set-badge>
                 </div>
@@ -79,21 +92,22 @@ export default {
         <div v-if="info.cards_found && showFound" class="order-cards-found">
             <span>Cards found: <button @click="showFound = !showFound">Show missing</button> </span>
             <div v-for="card in info.cards_found" class="order-cards-found-card">
-              <span v-if="!card.edit" @click="$set(card, 'edit', !card.edit)"> {{card.quantity}} {{card.name}} </span>
-              <span v-if="card.edit"> <input v-model="card.quantity" /> {{card.name}} <button @click="$set(card, 'edit', !card.edit); updateOrderInfo()"> ✅ </button></span>
+                <span v-if="!card.edit" @click="$set(card, 'edit', !card.edit)"> {{ card.quantity }} {{ card.name }} </span>
+                <span v-if="card.edit"> <input v-model="card.quantity" /> {{ card.name }} <button
+                        @click="$set(card, 'edit', !card.edit); updateOrderInfo()"> ✅ </button></span>
             </div>
         </div>
         <div v-if="info.cards_found && !showFound" class="order-cards-missing">
             <span>Cards missing: <button @click="showFound = !showFound">Show/edit found</button> </span>
             <div v-for="card in missingCards" class="order-cards-missing-card">
-              <span> {{card.quantity}} {{card.name}} </span>
+                <span> {{ card.quantity }} {{ card.name }} </span>
             </div>
         </div>
         <div class="order-view-comment">
             <p v-if="info.comment"> Notes: {{ info.comment }}</p>
         </div>
         <label for="pick">Pick order</label>
-        <input id="pick" type="checkbox" v-model="toPick" @change="updatePicks()"/>
+        <input id="pick" type="checkbox" v-model="toPick" @change="updatePicks()" />
     </div>
 
 </template>
@@ -118,5 +132,4 @@ div.status-cancelled {
     background: #000;
     color: #fff;
 }
-
 </style>

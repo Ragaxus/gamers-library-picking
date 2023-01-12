@@ -93,17 +93,6 @@ router.get('/submit-order', isAuthenticated, function (req, res, next) {
   res.renderVue('submit-order', data);
 });
 
-const color_lookup = {
-  'L': "Land",
-  'C': "Colorless",
-  'M': "Multicolored",
-  'W': "White",
-  'U': "Blue",
-  'B': "Black",
-  'R': "Red",
-  'G': "Green"
-}
-
 async function addCardMetadataToOrders(orders) {
   var order_info = orders.map(async function (order) {
     order_card_names = order.cards.map(card => card.name);
@@ -120,7 +109,7 @@ async function addCardMetadataToOrders(orders) {
       card_doc = card_metadata[card.name];
       if (card_doc) {
         card.sets = card_doc.sets;
-        card.color = color_lookup[card_doc.color];
+        card.color = card_doc.color;
       } else {
         card.sets = []
         card.color = ""

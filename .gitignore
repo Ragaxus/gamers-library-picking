@@ -929,3 +929,4 @@ public/images/set-icons/zne.svg
 public/images/set-icons/znr.svg
 prod.env
 var/db/sessions.db
+var/db/sessions.db
