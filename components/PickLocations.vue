@@ -17,7 +17,8 @@ export default {
                 'B': "Black",
                 'R': "Red",
                 'G': "Green"
-            }
+            },
+            cardsPicked: {}
         }
     },
     methods: {
@@ -25,6 +26,13 @@ export default {
                 axios.post(`/box-locations`, { cards: this.cardstopick }).then(response => {
                     this.boxData = response.data;
                 });
+            },
+            modifyPicked(name, amount) {
+                if (!(name in this.cardsPicked)) this.cardsPicked[name] = 0;
+                this.cardsPicked[name] += amount;
+                if (this.cardsPicked[name] <= 0 ) this.cardsPicked[name] = 0;
+                console.log(this.cardsPicked)
+                this.$forceUpdate();
             }
         },
         watch: {
@@ -39,10 +47,12 @@ export default {
             <div v-for="boxset in boxinfo.cards_by_set">
                 <set-badge :set="boxset.set"></set-badge>
                 <div v-for="boxsetcolor in boxset.cards_by_color">
-                    {{ color_lookup[boxsetcolor.color] }}:
-                    <ul>
-                        <li v-for="card in boxsetcolor.cards"> {{ card }} </li>
-                    </ul>
+                    <h3>{{ color_lookup[boxsetcolor.color] }}:</h3>
+                        <div class="card-in-orders" v-for="card in boxsetcolor.cards" v-bind:class="{completed: cardsPicked[card.name] >= card.quantity}"> 
+                            <span>{{ card.name }}, {{ card.name in cardsPicked ? cardsPicked[card.name] : 0}} / {{ card.quantity }}</span>
+                            <button @click="modifyPicked(card.name, 1)">⬆️</button>
+                            <button @click="modifyPicked(card.name, -1)">⬇️</button>
+                        </div>
                 </div>
             </div>
         </div>
@@ -51,5 +61,11 @@ export default {
 <style>
 .pick-locations-box {
     border: 1px solid black;
+    margin: 10px;
+}
+div.completed span {
+    text-decoration: line-through;
+    font-style: italic;
+    color: gray;
 }
 </style>

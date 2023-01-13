@@ -17,10 +17,25 @@ export default {
     },
     computed: {
         cardsToPick() {
-            return this.orders
+            var cards = this.orders
                 .filter(order => order.toPick)
                 .map(order => order.cards)
                 .flat();
+
+            var cards_combined = cards
+                .map((card) => card.name)
+                .filter((value, index, self) => {
+                    return self.indexOf(value) === index
+                })
+                .map((name) => {
+                    var instances = cards.filter(card => card.name === name);
+                    return instances.slice(1).reduce((acc, card) => {
+                        acc.quantity += card.quantity;
+                        return acc;
+                    }, JSON.parse(JSON.stringify(instances[0])))
+                });
+
+            return cards_combined;
         }
     },
     methods: {
@@ -28,7 +43,6 @@ export default {
             axios.put(`/order/${_id}`, order_info);
         },
         updatePicks(_id, newPickStatus) {
-            console.log("updating order ", _id, " to ", newPickStatus);
             let order = this.orders.find(order => order._id == _id);
             order.toPick = newPickStatus;
         },
@@ -53,8 +67,7 @@ export default {
         </div>
         <div class="order-list">
             <Order v-for="(order, index) in orders" :key="index" :info="order" :id="index"
-                @update-order-info="updateOrderInfo"
-                @update-picks="updatePicks"></Order>
+                @update-order-info="updateOrderInfo" @update-picks="updatePicks"></Order>
         </div>
         <pick-locations :cardstopick="cardsToPick"></pick-locations>
     </div>

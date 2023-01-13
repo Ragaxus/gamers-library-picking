@@ -76,11 +76,8 @@ class BoxInventory {
                 var set_type = this.getSetType(set);
                 if (!set_type) return;
 
-                var card_info = {
-                    name: card.name,
-                    color: card.color,
-                    set: set
-                }
+                var card_info = JSON.parse(JSON.stringify(card));
+                card_info.set = set;
 
                 this.boxes.filter(box => box.type == set_type).forEach(box => {
                     if (this.boxHasCard(box, card_info)) {
@@ -103,7 +100,7 @@ class BoxInventory {
                 if (!(card.color in acc[card.set])) {
                     acc[card.set][card.color] = [];
                 }
-                acc[card.set][card.color].push(card.name);
+                acc[card.set][card.color].push({name: card.name, quantity: card.quantity});
                 return acc;
             }, {});
             let set_order = Object.entries(this.setDirectory)
@@ -117,7 +114,7 @@ class BoxInventory {
                     return {color: c_entry[0], cards} })
                 .sort((ca, cb) => {
                     let order = SortableCard.colorOrder;
-                    return order.indexOf(ca) - order.indexOf(cb);
+                    return order.indexOf(ca.color) - order.indexOf(cb.color);
                 });
                 return {set: sc_entry[0], cards_by_color};
             })
