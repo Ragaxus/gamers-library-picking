@@ -111,6 +111,7 @@ async function addCardMetadataToOrders(orders) {
       }
     });
     order.toPick = false;
+    if (!order.cards_found) { order.cards_found = []; }
     return order;
   });
   return await Promise.all(order_info);
@@ -123,7 +124,9 @@ router.get('/view-orders', async function (req, res) {
     orders: order_data,
     search_criteria: {
       showInactiveOrders: false
-    }
+    },
+    display_criteria: "placed",
+    pick_all: false
   });
 });
 

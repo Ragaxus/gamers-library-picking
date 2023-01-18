@@ -16,7 +16,6 @@ export default {
     data() {
         return {
             showFound: true,
-            toPick: false,
             color_lookup: {}
         }
     },
@@ -36,10 +35,11 @@ export default {
         missingCards() {
             var missingCards = [];
             var info = this.info;
-            if (info.cards_found) {
+            var cards_found = info.cards_found;
+            if (cards_found) {
                 info.cards.forEach(card => {
                     var missing_card = structuredClone(card)
-                    var corresponding_found_card = info.cards_found.find(c => c.name == card.name);
+                    var corresponding_found_card = cards_found.find(c => c.name == card.name);
                     if (corresponding_found_card) missing_card.quantity -= corresponding_found_card.quantity;
                     if (missing_card.quantity > 0) missingCards.push(missing_card);
                 });
@@ -59,12 +59,15 @@ export default {
             this.$emit('update-order-info', this.info._id, this.info)
         },
         updatePicks() {
-            this.$emit('update-picks', this.info._id, this.toPick)
+            this.$emit('update-picks', this.info._id)
         },
         orderCreatedTimestamp() {
             const created_date = new Date(this.info.created_date);
             return `${created_date.toLocaleDateString()} ${created_date.toLocaleTimeString()}`;
         }
+    },
+    watch: {
+        info(newVal, oldVal) { this.$forceUpdate(); }
     }
 }
 </script>
@@ -81,11 +84,14 @@ export default {
                 <option value="cancelled">Cancelled</option>
             </select>
         </div>
+        <div class="order-view-contact-info">
+            {{ info.contact_info }}
+        </div>
         <div class="order-cards-ordered">
             <div v-for="card in info.cards" class="order-view-card">
                 {{ card.quantity }} {{ card.name }} ({{ color_lookup[card.color] }})
                 <div class="set-badges">
-                    <set-badge v-for="set in card.sets" :set="set"></set-badge>
+                    <set-badge v-for="set in card.sets" :set="set" :key="set"></set-badge>
                 </div>
             </div>
         </div>
@@ -93,7 +99,7 @@ export default {
             <span>Cards found: <button @click="showFound = !showFound">Show missing</button> </span>
             <div v-for="card in info.cards_found" class="order-cards-found-card">
                 <span v-if="!card.edit" @click="$set(card, 'edit', !card.edit)"> {{ card.quantity }} {{ card.name }} </span>
-                <span v-if="card.edit"> <input v-model="card.quantity" /> {{ card.name }} <button
+                <span v-if="card.edit"> <input type="number" v-model.number="card.quantity" /> {{ card.name }} <button
                         @click="$set(card, 'edit', !card.edit); updateOrderInfo()"> ✅ </button></span>
             </div>
         </div>
@@ -107,7 +113,7 @@ export default {
             <p v-if="info.comment"> Notes: {{ info.comment }}</p>
         </div>
         <label for="pick">Pick order</label>
-        <input id="pick" type="checkbox" v-model="toPick" @change="updatePicks()" />
+        <input id="pick" type="checkbox" :checked="info.toPick" @change="updatePicks()" />
     </div>
 
 </template>

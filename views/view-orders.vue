@@ -8,7 +8,9 @@ export default {
             orders: [],
             search_criteria: {
                 showInactiveOrders: false
-            }
+            },
+            display_criteria: "picked",
+            pick_all: false
         }
     },
     components: {
@@ -16,35 +18,65 @@ export default {
         PickLocations: PickLocations
     },
     computed: {
-        cardsToPick() {
+        ordersToPick() {
+            return this.orders
+                .filter(order => order.toPick);
+        },
+        cardsPicked() {
             var cards = this.orders
                 .filter(order => order.toPick)
-                .map(order => order.cards)
+                .map(order => order.cards_found)
                 .flat();
 
-            var cards_combined = cards
-                .map((card) => card.name)
-                .filter((value, index, self) => {
-                    return self.indexOf(value) === index
-                })
-                .map((name) => {
-                    var instances = cards.filter(card => card.name === name);
-                    return instances.slice(1).reduce((acc, card) => {
-                        acc.quantity += card.quantity;
-                        return acc;
-                    }, JSON.parse(JSON.stringify(instances[0])))
-                });
+            var picked_dict = cards.reduce((acc, card) => {
+                let name = card.name;
+                if (!(name in acc)) { acc[name] = card.quantity; }
+                else { acc[name] += card.quantity; }
+                return acc;
+            }, {});
 
-            return cards_combined;
+            return picked_dict;
         }
     },
     methods: {
+        shouldDisplayOrder(order_info) {
+            if (this.display_criteria == "all") return true;
+            else return (this.display_criteria == order_info.status);
+        },
         updateOrderInfo(_id, order_info) {
             axios.put(`/order/${_id}`, order_info);
         },
-        updatePicks(_id, newPickStatus) {
+        updatePicks(_id) {
             let order = this.orders.find(order => order._id == _id);
-            order.toPick = newPickStatus;
+            order.toPick = !(order.toPick);
+        },
+        modifyFound(cardName, amount) {
+            let activeOrders = this.orders.filter(order => order.toPick == true);
+            var orderToUpdate;
+            if (amount < 0) {
+                activeOrders.reverse();
+                orderToUpdate = activeOrders.find(order => order.cards_found.some(card => card.name == cardName));
+            }
+            else {
+                orderToUpdate = activeOrders.find(order => order.cards.some(card => card.name == cardName));
+            }
+            if (orderToUpdate) {
+                if (!orderToUpdate.cards_found) { Vue.set(orderToUpdate.cards_found, 0, { name: cardName, quantity: amount }); }
+                else {
+                    let existing_card_found = orderToUpdate.cards_found.find(card_found => card_found.name == cardName);
+                    if (!existing_card_found) {
+                        orderToUpdate.cards_found.push({ name: cardName, quantity: amount });
+                    }
+                    else {
+                        existing_card_found.quantity += amount;
+                        if (existing_card_found.quantity == 0) {
+                            orderToUpdate.cards_found.splice(existing_card_found, 1);
+                        }
+                    }
+                }
+                this.updateOrderInfo(orderToUpdate._id, orderToUpdate);
+                this.$forceUpdate();
+            }
         },
         search() {
             var vue = this;
@@ -52,6 +84,13 @@ export default {
             axios.get(`/order`, { params: this.search_criteria }).then(function (response) {
                 console.log(response.data)
                 vue.orders = response.data;
+            });
+        },
+        toggleAllVisibleOrders() {
+            this.orders.forEach(order => {
+                if (this.shouldDisplayOrder(order)) {
+                    this.$set(order, "toPick", this.pick_all)
+                }
             });
         }
     }
@@ -65,11 +104,18 @@ export default {
             <label for="show_inactive">Show sold and cancelled orders</label>
             <button @click="search">Search</button>
         </div>
+        <div class="display-options">
+            <input type="radio" v-model="display_criteria" value="placed" />Placed orders
+            <input type="radio" v-model="display_criteria" value="picked" />Picked orders
+            <input type="radio" v-model="display_criteria" value="all" />All orders
+        </div>
+        <input type="checkbox" v-model="pick_all" @change="toggleAllVisibleOrders"/> Set picking for all orders
         <div class="order-list">
-            <Order v-for="(order, index) in orders" :key="index" :info="order" :id="index"
+            <Order v-for="(order, index) in orders" v-if="shouldDisplayOrder(order)" :key="index" :info="order" :id="index"
                 @update-order-info="updateOrderInfo" @update-picks="updatePicks"></Order>
         </div>
-        <pick-locations :cardstopick="cardsToPick"></pick-locations>
+        <pick-locations :orderstopick="ordersToPick" :cardspicked="cardsPicked"
+            @modify-picked="modifyFound"></pick-locations>
     </div>
 </template>
 
