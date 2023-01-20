@@ -59,34 +59,24 @@ passport.deserializeUser(function (user, cb) {
   });
 });
 
-router.get('/oauth2/redirect/google', 
-  passport.authenticate('google', { failureRedirect: '/login'}),
+router.get('/oauth2/redirect/google',
+  passport.authenticate('google', {
+    failureRedirect: '/login'
+  }),
   function (req, res) {
     var state = req.authInfo.state;
     res.redirect(state.lastUrl || '/');
   }
-  );
+);
 
 function isAuthenticated(req, res, next) {
   if (req.isAuthenticated()) return next();
-  passport.authenticate('google', {state: {lastUrl: req.originalUrl}})(req, res, next);
+  passport.authenticate('google', {
+    state: {
+      lastUrl: req.originalUrl
+    }
+  })(req, res, next);
 }
-
-router.get('/submit-order', isAuthenticated, function (req, res, next) {
-  const data = {
-    order: {
-      customer_name: "",
-      cards: [],
-      comment: ""
-    },
-    new_item: {
-      new_item_quantity: 0,
-      new_item_name: ""
-    },
-    card_names: allCardNames
-  };
-  res.renderVue('submit-order', data);
-});
 
 async function addCardMetadataToOrders(orders) {
   var order_info = orders.map(async function (order) {
@@ -111,24 +101,40 @@ async function addCardMetadataToOrders(orders) {
       }
     });
     order.toPick = false;
-    if (!order.cards_found) { order.cards_found = []; }
+    if (!order.cards_found) {
+      order.cards_found = [];
+    }
     return order;
   });
   return await Promise.all(order_info);
 }
 
-router.get('/view-orders', async function (req, res) {
+router.get('/', isAuthenticated, async function (req, res, next) {
   var orders = await getActiveOrders();
   var order_data = await addCardMetadataToOrders(orders);
-  res.renderVue('view-orders', {
+  const data = {
+    order: {
+      customer_name: "",
+      cards: [],
+      comment: ""
+    },
+    new_item: {
+      new_item_quantity: 0,
+      new_item_name: ""
+    },
+    card_names: allCardNames,
     orders: order_data,
     search_criteria: {
       showInactiveOrders: false
     },
     display_criteria: "placed",
-    pick_all: false
-  });
+    pick_all: false,
+    showModal: false
+  };
+  res.renderVue('home', data);
 });
+
+router.get('/view-orders', async function (req, res) {});
 
 
 router.get('/order', async function (req, res) {
@@ -161,7 +167,9 @@ router.put('/order/:orderId', async function (req, res) {
   res.send('succeeded');
 });
 
-let setDirectory = JSON.parse(fs.readFileSync('./utils/set_directory.json', {encoding: 'utf8'}));
+let setDirectory = JSON.parse(fs.readFileSync('./utils/set_directory.json', {
+  encoding: 'utf8'
+}));
 
 //let boxesData = JSON.parse(fs.readFileSync('./utils/boxes.json', {encoding:'utf8'}));
 let boxInventory = new BoxInventory(setDirectory);

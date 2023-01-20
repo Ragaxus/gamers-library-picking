@@ -5,17 +5,20 @@ import PickLocations from "../components/PickLocations.vue"
 export default {
     data: function () {
         return {
-            orders: [],
             search_criteria: {
                 showInactiveOrders: false
             },
-            display_criteria: "picked",
+            display_criteria: "",
             pick_all: false
         }
     },
     components: {
         Order: Order,
         PickLocations: PickLocations
+    },
+    props: ["orders", "displaycriteria"],
+    mounted() {
+        this.display_criteria = this.displaycriteria;
     },
     computed: {
         ordersToPick() {
@@ -80,9 +83,7 @@ export default {
         },
         search() {
             var vue = this;
-            console.log(this.search_criteria)
             axios.get(`/order`, { params: this.search_criteria }).then(function (response) {
-                console.log(response.data)
                 vue.orders = response.data;
             });
         },

@@ -110,7 +110,7 @@ class BoxInventory {
             .map(sc_entry => {
                 let cards_by_color = Object.entries(sc_entry[1])
                 .map(c_entry => {
-                    cards = c_entry[1].sort();
+                    cards = c_entry[1].sort((ca, cb) => ca.name.localeCompare(cb.name));
                     return {color: c_entry[0], cards} })
                 .sort((ca, cb) => {
                     let order = SortableCard.colorOrder;
@@ -121,6 +121,11 @@ class BoxInventory {
             .sort((sca, scb) => { return set_order.indexOf(sca.set) - set_order.indexOf(scb.set) } );
             result.push({box_name, cards_by_set});
         })
+        result.sort((boxInfoA, boxInfoB) => {
+            let boxA = this.boxes.find(box => box.name === boxInfoA.box_name)
+            let boxB = this.boxes.find(box => box.name === boxInfoB.box_name)
+            return boxA._id.toString().localeCompare(boxB._id.toString());
+        });
         return result;
     }
 }

@@ -49,7 +49,6 @@ export default {
     },
     methods: {
         updateStatus() {
-            console.log(this.info.status);
             if (this.info.status == 'picked' && this.info.cards_found == 0) {
                 this.info.cards_found = JSON.parse(JSON.stringify(this.info.cards)) //deep copy
             }
