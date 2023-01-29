@@ -21,21 +21,26 @@ var CardMetadata = connection.model('CardMetadata');
 
 async function getAllCardsUrl() {
     //get url to call to retrieve all cards
-    var response = await axios.get('https://api.scryfall.com/bulk-data');
-    var allCardsUrl = response.data
-        .data
-        .find((entry) => entry.type == 'all_cards')
-        .download_uri;
-    return allCardsUrl;
+    try {
+        var response = await axios('https://api.scryfall.com/bulk-data');
+        var allCardsUrl = response.data
+            .data
+            .find((entry) => entry.type == 'default_cards')
+            .download_uri;
+        return allCardsUrl;
+    } catch (error) {
+        console.log(error.message);
+    }
 }
 
 async function allCardsStreamFromScryfall() {
     try {
-        var allCardsUrl = getAllCardsUrl();
+        var allCardsUrl = await getAllCardsUrl();
         //actually retrieve all the cards
-        return await axios.get(allCardsUrl, {
+        var allCardsResp = await axios.get(allCardsUrl, {
             responseType: "stream"
         });
+        return allCardsResp.data;
     } catch (error) {
         console.log(error);
     }
@@ -114,11 +119,7 @@ async function processAllCards(allCards_stream) {
 }
 
 (async () => {
-    var allCards_stream = allCardsStreamFromFile("C:\\Users\\ragax\\Downloads\\all-cards-20221202221942.json");
+    // var allCards_stream = allCardsStreamFromFile("C:\\Users\\ragax\\Downloads\\all-cards-20221202221942.json");
+    var allCards_stream = await allCardsStreamFromScryfall();
     var new_card_data = await processAllCards(allCards_stream);
 })();
-
-//(async () => {
-//    var response = await axios('https://api.scryfall.com/cards/search?q=Silundi%20Visions&pretty=true')
-//    console.log(determineColor(response.data.data[0]))
-//})();

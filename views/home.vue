@@ -20,6 +20,9 @@ export default {
             card_names: [],
             showModal: false
         }
+    },
+    methods: {
+        addNewOrder(newOrder) { this.orders.push(newOrder); }
     }
 }
 </script>
@@ -30,7 +33,10 @@ export default {
         <transition name="modal" v-if="showModal">
             <div class="modal-mask">
                 <div class="modal-wrapper">
-                    <submit-new-order class="modal-container" :cardnames="card_names" @close="showModal = false"></submit-new-order>
+                    <submit-new-order class="modal-container" 
+                    :cardnames="card_names"
+                    @new-order="addNewOrder" 
+                    @close="showModal = false"></submit-new-order>
                 </div>
             </div>
         </transition>
@@ -63,6 +69,7 @@ export default {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
     transition: all 0.3s ease;
     font-family: Helvetica, Arial, sans-serif;
+    overflow-y: auto;
 }
 
 .modal-header h3 {

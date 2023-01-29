@@ -63,6 +63,8 @@ export default {
             axios.post('/order', this.order).then(res => {
                 this.order.cards = [];
                 this.order.name = "";
+                this.customer_name = "";
+                this.$emit('new-order', res.data);
                 this.$emit('close');
             });
         },
@@ -99,8 +101,10 @@ export default {
         </div>
         <label for="customer-name">Customer Name: </label>
         <input type="text" name="customer-name" v-model="order.customer_name" />
-        <order-entry v-for="(entry, index) in order.cards" :key="index" :id="index" :quantity="entry.quantity"
-            :name="entry.name" @delete-entry="deleteItem"> </order-entry>
+        <div id="cards-in-order">
+            <order-entry v-for="(entry, index) in order.cards" :key="index" :id="index" :quantity="entry.quantity"
+                :name="entry.name" @delete-entry="deleteItem"> </order-entry>
+        </div>
         <div id="newItem">
             <input id="new-item-quantity" size="2" @keyup.enter="addItem" v-model="new_item.new_item_quantity" />
             <input id="new-item-name" @keyup.enter="addItem" v-model="new_item.new_item_name" />
@@ -121,5 +125,10 @@ export default {
 <style>
 div.newItem {
     display: inline;
+}
+
+div#cards-in-order {
+    height: 150px;
+    overflow: scroll;
 }
 </style>

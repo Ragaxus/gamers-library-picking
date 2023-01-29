@@ -29,55 +29,6 @@ fs.readFile('./default-cards.json', 'utf8', (err, data) => {
   allCardNames = defaultCards.map(card => card.name).sort();
 });
 
-passport.use(new GoogleStrategy({
-  clientID: process.env['GOOGLE_CLIENT_ID'],
-  clientSecret: process.env['GOOGLE_CLIENT_SECRET'],
-  callbackURL: '/oauth2/redirect/google',
-  scope: ['https://www.googleapis.com/auth/userinfo.profile'],
-  passReqToCallback: true,
-}, function verify(req, issuer, profile, cb) {
-  return cb(null, {
-    name: profile.displayName
-  }, {
-    originalUrl: req.originalUrl
-  });
-}));
-
-passport.serializeUser(function (user, cb) {
-  process.nextTick(function () {
-    cb(null, {
-      id: user.id,
-      username: user.username,
-      name: user.name
-    })
-  });
-});
-
-passport.deserializeUser(function (user, cb) {
-  process.nextTick(function () {
-    return cb(null, user);
-  });
-});
-
-router.get('/oauth2/redirect/google',
-  passport.authenticate('google', {
-    failureRedirect: '/login'
-  }),
-  function (req, res) {
-    var state = req.authInfo.state;
-    res.redirect(state.lastUrl || '/');
-  }
-);
-
-function isAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) return next();
-  passport.authenticate('google', {
-    state: {
-      lastUrl: req.originalUrl
-    }
-  })(req, res, next);
-}
-
 async function addCardMetadataToOrders(orders) {
   var order_info = orders.map(async function (order) {
     order_card_names = order.cards.map(card => card.name);
@@ -109,7 +60,7 @@ async function addCardMetadataToOrders(orders) {
   return await Promise.all(order_info);
 }
 
-router.get('/', isAuthenticated, async function (req, res, next) {
+router.get('/', async function (req, res, next) {
   var orders = await getActiveOrders();
   var order_data = await addCardMetadataToOrders(orders);
   const data = {
@@ -134,7 +85,6 @@ router.get('/', isAuthenticated, async function (req, res, next) {
   res.renderVue('home', data);
 });
 
-router.get('/view-orders', async function (req, res) {});
 
 
 router.get('/order', async function (req, res) {
@@ -152,14 +102,16 @@ router.get('/order', async function (req, res) {
   }
 });
 
-router.post('/order', function (req, res) {
+router.post('/order', async function (req, res) {
   var newOrder = req.body;
-  Order.create(newOrder, function (err, todo) {
+  Order.create(newOrder, async function (err, newOrderRecord) {
     if (err) res.renderVue('error.vue', {
       title: 'Error creating your order :('
     })
+    var newOrderArr = await addCardMetadataToOrders([newOrderRecord.toObject()]); 
+    var newCardObj = newOrderArr[0];
+    return res.send(200, newCardObj);
   });
-  res.send('succeeded');
 });
 
 router.put('/order/:orderId', async function (req, res) {
