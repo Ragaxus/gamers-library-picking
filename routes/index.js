@@ -18,16 +18,10 @@ async function getActiveOrders() {
   return await Order.find({}).where('status').nin(['sold', 'cancelled']).lean();
 };
 
-//All current cards -- read from file which is updated out of band
-var allCardNames;
-fs.readFile('./default-cards.json', 'utf8', (err, data) => {
-  if (err) {
-    console.error(err);
-    return;
-  }
-  const defaultCards = JSON.parse(data);
-  allCardNames = defaultCards.map(card => card.name).sort();
-});
+async function getAllCardNames() {
+  let names = await CardMetadata.find({}).select('name').lean();
+  return names.map(name => name.name);
+}
 
 async function addCardMetadataToOrders(orders) {
   var order_info = orders.map(async function (order) {
@@ -63,6 +57,7 @@ async function addCardMetadataToOrders(orders) {
 router.get('/', async function (req, res, next) {
   var orders = await getActiveOrders();
   var order_data = await addCardMetadataToOrders(orders);
+  var allCardNames = await getAllCardNames();
   const data = {
     order: {
       customer_name: "",

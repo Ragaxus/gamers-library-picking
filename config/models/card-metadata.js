@@ -3,7 +3,7 @@ var mongoose = require('mongoose'),
 
 require('dotenv').config();
 
-const connection = mongoose.createConnection(process.env.DB_CONN_STRING);
+const connection = mongoose.createConnection(process.env.DB_CONN_STRING)
 
 // card metadata model
 var cardmetadataSchema = new Schema({
