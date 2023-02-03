@@ -22,10 +22,12 @@ export default {
     },
     computed: {
         ordersToPick() {
+            if (!this.orders) return [];
             return this.orders
                 .filter(order => order.toPick);
         },
         cardsPicked() {
+            if (!this.orders) return [];
             var cards = this.orders
                 .filter(order => order.toPick)
                 .map(order => order.cards_found)
@@ -47,7 +49,7 @@ export default {
             else return (this.display_criteria == order_info.status);
         },
         updateOrderInfo(_id, order_info) {
-            axios.put(`/order/${_id}`, order_info);
+            this.axios.put(`/api/order/${_id}`, order_info);
         },
         updatePicks(_id) {
             let order = this.orders.find(order => order._id == _id);
@@ -83,7 +85,7 @@ export default {
         },
         search() {
             var vue = this;
-            axios.get(`/order`, { params: this.search_criteria }).then(function (response) {
+            this.axios.get(`/api/order`, { params: this.search_criteria }).then(function (response) {
                 vue.orders = response.data;
             });
         },

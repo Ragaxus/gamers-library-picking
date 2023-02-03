@@ -2,6 +2,22 @@
 import ViewOrders from "../components/ViewOrders.vue"
 import SubmitNewOrder from "../components/SubmitNewOrder.vue";
 export default {
+    name: 'Home',
+    metaInfo: {
+        title: "Gamer's Library Orders",
+        script: [
+            { src: "https://unpkg.com/vue@2.4.2/dist/vue.js", async: true, defer: true },
+            { src: "https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.0/axios.min.js", async: true, defer: true },
+            { src: "https://code.jquery.com/jquery-3.6.0.js", async: true, defer: true },
+            { src: "https://code.jquery.com/ui/1.13.2/jquery-ui.js", async: true, defer: true },
+            { src: "https://cdn.jsdelivr.net/npm/fuzzysort@2.0.4/fuzzysort.min.js", async: true, defer: true },
+            { src: "https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js", async: true, defer: true }
+        ],
+        link: [
+            { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css' },
+            { rel: 'stylesheet', href: '//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css' }
+        ]
+    },
     components: {
         ViewOrders: ViewOrders,
         SubmitNewOrder: SubmitNewOrder
@@ -18,8 +34,20 @@ export default {
                 new_item_name: ""
             },
             card_names: [],
+            orders: [],
+            search_criteria: {
+                showInactiveOrders: false
+            },
+            display_criteria: "placed",
+            pick_all: false,
             showModal: false
         }
+    },
+    mounted() {
+        this.axios.get('/api/init').then(res => {
+            this.card_names = res.data.card_names;
+            this.orders = res.data.order_data;
+        });
     },
     methods: {
         addNewOrder(newOrder) { this.orders.push(newOrder); }
@@ -27,16 +55,14 @@ export default {
 }
 </script>
 <template>
-    <div class="home">
+    <div id="app" class="home">
         <button @click="showModal = true">New order</button>
         <view-orders :displaycriteria="display_criteria" :orders="orders"></view-orders>
         <transition name="modal" v-if="showModal">
             <div class="modal-mask">
                 <div class="modal-wrapper">
-                    <submit-new-order class="modal-container" 
-                    :cardnames="card_names"
-                    @new-order="addNewOrder" 
-                    @close="showModal = false"></submit-new-order>
+                    <submit-new-order class="modal-container" :cardnames="card_names" @new-order="addNewOrder"
+                        @close="showModal = false"></submit-new-order>
                 </div>
             </div>
         </transition>
@@ -45,7 +71,7 @@ export default {
 <style>
 .modal-mask {
     position: fixed;
-    z-index: 9998;
+    z-index: 99;
     top: 0;
     left: 0;
     width: 100%;

@@ -54,30 +54,15 @@ async function addCardMetadataToOrders(orders) {
   return await Promise.all(order_info);
 }
 
-router.get('/', async function (req, res, next) {
+router.get('/init', async function (req, res, next) {
   var orders = await getActiveOrders();
   var order_data = await addCardMetadataToOrders(orders);
-  var allCardNames = await getAllCardNames();
+  var card_names = await getAllCardNames();
   const data = {
-    order: {
-      customer_name: "",
-      cards: [],
-      comment: ""
-    },
-    new_item: {
-      new_item_quantity: 0,
-      new_item_name: ""
-    },
-    card_names: allCardNames,
-    orders: order_data,
-    search_criteria: {
-      showInactiveOrders: false
-    },
-    display_criteria: "placed",
-    pick_all: false,
-    showModal: false
-  };
-  res.renderVue('home', data);
+    card_names,
+    order_data
+  }
+  res.send(data);
 });
 
 

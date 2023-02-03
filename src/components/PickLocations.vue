@@ -44,7 +44,7 @@ export default {
     },
     methods: {
         updateBoxIndex() {
-            axios.post(`/box-locations`, { cards: this.cardstopick }).then(response => {
+            this.axios.post(`/api/box-locations`, { cards: this.cardstopick }).then(response => {
                 this.boxData = response.data;
             });
         },

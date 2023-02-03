@@ -15,7 +15,7 @@ export default {
                 new_item_name: ""
             },
             mass_entry: ''
-        } // Overwritten by renderVue in routes file 
+        } 
     },
     components: { OrderEntry: OrderEntry },
     props: ["cardnames"],
@@ -60,7 +60,7 @@ export default {
             this.order.cards.splice(itemIdx, 1);
         },
         submit() {
-            axios.post('/order', this.order).then(res => {
+            this.axios.post('/api/order', this.order).then(res => {
                 this.order.cards = [];
                 this.order.name = "";
                 this.customer_name = "";
@@ -108,7 +108,7 @@ export default {
         <div id="newItem">
             <input id="new-item-quantity" size="2" @keyup.enter="addItem" v-model="new_item.new_item_quantity" />
             <input id="new-item-name" @keyup.enter="addItem" v-model="new_item.new_item_name" />
-            <button @click="addItem" :disabled='this.new_item_name == ""'>+</button>
+            <button @click="addItem" :disabled='this.new_item.new_item_name == ""'>+</button>
         </div>
         <div id="massEntry">
             <textarea id="txtMassEntry" v-model="mass_entry"></textarea>

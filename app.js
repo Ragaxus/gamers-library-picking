@@ -10,36 +10,15 @@ var SQLiteStore = require('connect-sqlite3')(session);
 var mongoose = require('mongoose');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 
 var expressVue = require('express-vue');
 
 var app = express();
-const vueOptions = {
-    vueOptions: "2.4.2",
-    rootPath: path.join(__dirname, '/views'),
-    vue: {head: {
-      meta: [
-        {script: "https://unpkg.com/vue@2.4.2/dist/vue.js"},
-        {script: "https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.0/axios.min.js"},
-        {script: "https://code.jquery.com/jquery-3.6.0.js"},
-        {script: "https://code.jquery.com/ui/1.13.2/jquery-ui.js"},
-        {style: "//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css"},
-        {script: "https://cdn.jsdelivr.net/npm/fuzzysort@2.0.4/fuzzysort.min.js"},
-        {style: "https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"},
-        {script: "https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"}
-
-      ]
-    }}
-};
-const expressVueMiddleware = expressVue.init(vueOptions);
-app.use(expressVueMiddleware);
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(session({
   secret: 'well you know what they say',
@@ -49,13 +28,12 @@ app.use(session({
 }))
 app.use(passport.authenticate('session'));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/api', indexRouter);
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
-});
+if(process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, 'dist')));
+  app.get(/.*/, (req, res) => res.sendFile(path.join(__dirname, 'dist', 'index.html')));
+}
 
 // error handler
 app.use(function(err, req, res, next) {
@@ -65,7 +43,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.renderVue('error.vue', {error: err}, vueOptions);
+  res.send();
 });
 
 module.exports = app;
