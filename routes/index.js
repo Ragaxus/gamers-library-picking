@@ -5,7 +5,6 @@ var router = express.Router();
 var bodyParser = require('body-parser');
 var passport = require('passport');
 var base64url = require('base64url');
-var GoogleStrategy = require('passport-google-oidc');
 var BoxInventory = require('../utils/box-inventory');
 
 //Mongoose
@@ -13,6 +12,7 @@ var Order = require('../config/models/order').connection.model('Order');
 var CardMetadata = require('../config/models/card-metadata').connection.model('CardMetadata');
 var User = require('../config/models/user').connection.model('User');
 var Box = require('../config/models/box').connection.model('Box');
+var SetDirectory = require('../config/models/set-directory').connection.model('SetDirectory');
 
 async function getActiveOrders() {
   return await Order.find({}).where('status').nin(['sold', 'cancelled']).lean();
@@ -99,14 +99,10 @@ router.put('/order/:orderId', async function (req, res) {
   res.send('succeeded');
 });
 
-let setDirectory = JSON.parse(fs.readFileSync('./utils/set_directory.json', {
-  encoding: 'utf8'
-}));
-
-//let boxesData = JSON.parse(fs.readFileSync('./utils/boxes.json', {encoding:'utf8'}));
-let boxInventory = new BoxInventory(setDirectory);
 
 router.post('/box-locations', async function (req, res) {
+  let setDirectory = await SetDirectory.findOne({}, '-_id').lean();
+  let boxInventory = new BoxInventory(setDirectory);
   boxInventory.boxes = await Box.find({}).lean();
   let result = boxInventory.findCardsInBoxes(req.body.cards);
   res.send(result);
