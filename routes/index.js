@@ -19,8 +19,8 @@ async function getActiveOrders() {
 };
 
 async function getAllCardNames() {
-  let names = await CardMetadata.find({}).select('name').lean();
-  return names.map(name => name.name);
+  let names = await CardMetadata.distinct('name');
+  return names;
 }
 
 async function addCardMetadataToOrders(orders) {
