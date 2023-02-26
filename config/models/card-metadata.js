@@ -10,6 +10,7 @@ var cardmetadataSchema = new Schema({
     name: String,
     color: String,
     sets: Array,
+    prices: Object
 });
 
 connection.model('CardMetadata', cardmetadataSchema);

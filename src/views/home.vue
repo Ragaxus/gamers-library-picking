@@ -6,12 +6,12 @@ export default {
     metaInfo: {
         title: "Gamer's Library Orders",
         script: [
-            { src: "https://unpkg.com/vue@2.4.2/dist/vue.js", async: true, defer: true },
-            { src: "https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.0/axios.min.js", async: true, defer: true },
-            { src: "https://code.jquery.com/jquery-3.6.0.js", async: true, defer: true },
-            { src: "https://code.jquery.com/ui/1.13.2/jquery-ui.js", async: true, defer: true },
-            { src: "https://cdn.jsdelivr.net/npm/fuzzysort@2.0.4/fuzzysort.min.js", async: true, defer: true },
-            { src: "https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js", async: true, defer: true }
+            { src: "https:/unpkg.com/vue@2.4.2/dist/vue.js", async: true, defer: true },
+            { src: "https:/cdnjs.cloudflare.com/ajax/libs/axios/1.2.0/axios.min.js", async: true, defer: true },
+            { src: "https:/code.jquery.com/jquery-3.6.0.js", async: true, defer: true },
+            { src: "https:/code.jquery.com/ui/1.13.2/jquery-ui.js", async: true, defer: true },
+            { src: "https:/cdn.jsdelivr.net/npm/fuzzysort@2.0.4/fuzzysort.min.js", async: true, defer: true },
+            { src: "https:/cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js", async: true, defer: true }
         ],
         link: [
             { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css' },
@@ -50,14 +50,18 @@ export default {
         });
     },
     methods: {
-        addNewOrder(newOrder) { this.orders.push(newOrder); }
+        addNewOrder(newOrder) {
+            this.axios.post('/api/order', newOrder).then(res => {
+               this.orders.push(res.data);
+            }); 
+        }
     }
 }
 </script>
 <template>
     <div id="app" class="home">
         <button @click="showModal = true">New order</button>
-        <view-orders :displaycriteria="display_criteria" :orders="orders"></view-orders>
+        <view-orders :displaycriteria="display_criteria" :orders="orders" :cardnames="card_names"></view-orders>
         <transition name="modal" v-if="showModal">
             <div class="modal-mask">
                 <div class="modal-wrapper">

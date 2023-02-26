@@ -85,18 +85,20 @@ router.get('/order', async function (req, res) {
 router.post('/order', async function (req, res) {
   var newOrder = req.body;
   Order.create(newOrder, async function (err, newOrderRecord) {
-    if (err) res.renderVue('error.vue', {
-      title: 'Error creating your order :('
-    })
-    var newOrderArr = await addCardMetadataToOrders([newOrderRecord.toObject()]); 
+    if (err) return res.send(400, err);
+    var newOrderArr = await addCardMetadataToOrders([newOrderRecord.toObject()]);
     var newCardObj = newOrderArr[0];
     return res.send(200, newCardObj);
   });
 });
 
 router.put('/order/:orderId', async function (req, res) {
-  const order = await Order.findByIdAndUpdate(req.params.orderId, req.body);
-  res.send('succeeded');
+  let newOrderRecord = await Order.findByIdAndUpdate(req.params.orderId, req.body, {
+    new: true
+  });
+  var newOrderArr = await addCardMetadataToOrders([newOrderRecord.toObject()]);
+  var newCardObj = newOrderArr[0];
+  return res.send(200, newCardObj);
 });
 
 

@@ -1,6 +1,15 @@
 const BoxInventory = require("./box-inventory");
 const fs = require('fs');
 
+
+var cards = [
+    {
+        name: "Felidar Guardian",
+        color: "W",
+        sets: ["mb1", "aer"]
+    }
+];
+
 let setDirectory = JSON.parse(fs.readFileSync('./set_directory.json', {encoding: 'utf8'}));
 
 // Read the file contents
@@ -21,18 +30,7 @@ fs.readFile('boxes.json', 'utf8', (error, data) => {
 
   let boxInventory = new BoxInventory(setDirectory);
   boxInventory.boxes = boxesData;
-  let result = boxInventory.findCardsInBoxes([
-    {
-        name: "Abzan Falconer",
-        sets: ["2x2", "ktk"],
-        color: "W"
-    },
-    {
-      name: "Bbzan Falconer",
-      sets: ["m12", "ktk"],
-      color: "B"
-    }
-  ]);
+  let result = boxInventory.findCardsInBoxes(cards);
   console.log(JSON.stringify(result, null, 2));
 
 });

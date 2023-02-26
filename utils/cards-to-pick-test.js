@@ -1,22 +1,10 @@
-var cards = [{
-        "name": "Shock",
-        "quantity": 1,
-        "color": "red",
-        "sets": ["9ED", "ASDF"]
-    },
+var cards = [
     {
-        "name": "Shock",
-        "quantity": 3,
-        "color": "red",
-        "sets": ["9ED", "ASDF"]
-    },
-    {
-        "name": "Time Walk",
-        "quantity": 2,
-        "color": "blue",
-        "sets": ["9ED", "ASDF"]
+        name: "Felidar Guardian",
+        color: "W",
+        sets: ["mb1", "aer"]
     }
-];
+]
 
 var cards_combined = cards
     .map((card) => card.name)

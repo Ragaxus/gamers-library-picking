@@ -16,7 +16,7 @@ export default {
         Order: Order,
         PickLocations: PickLocations
     },
-    props: ["orders", "displaycriteria"],
+    props: ["orders", "displaycriteria", "cardnames"],
     mounted() {
         this.display_criteria = this.displaycriteria;
     },
@@ -49,7 +49,13 @@ export default {
             else return (this.display_criteria == order_info.status);
         },
         updateOrderInfo(_id, order_info) {
-            this.axios.put(`/api/order/${_id}`, order_info);
+            this.axios.put(`/api/order/${_id}`, order_info)
+              .then(resp => {
+                    let new_order_info = resp.data;
+                    const i = this.orders.findIndex(order => order._id === _id );
+                    this.orders[i] = new_order_info;
+                    this.$forceUpdate();
+              });
         },
         updatePicks(_id) {
             let order = this.orders.find(order => order._id == _id);
@@ -114,7 +120,7 @@ export default {
         </div>
         <input type="checkbox" v-model="pick_all" @change="toggleAllVisibleOrders"/> Set picking for all orders
         <div class="order-list">
-            <Order v-for="(order, index) in orders" v-if="shouldDisplayOrder(order)" :key="index" :info="order" :id="index"
+            <Order v-for="(order, index) in orders" v-if="shouldDisplayOrder(order)" :key="index" :info="order" :id="index" :card-names="cardnames"
                 @update-order-info="updateOrderInfo" @update-picks="updatePicks"></Order>
         </div>
         <pick-locations :orderstopick="ordersToPick" :cardspicked="cardsPicked"

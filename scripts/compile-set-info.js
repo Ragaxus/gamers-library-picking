@@ -80,6 +80,12 @@ function determineColor(card_info) {
     }
 }
 
+function get_card_price(card_info) {
+    let price = card_info.prices.usd;
+    if (!price) price = card_info.prices.usd_foil;
+    return price;
+}
+
 async function processAllCards(allCards_stream) {
     var cardData = {}
 
@@ -96,12 +102,16 @@ async function processAllCards(allCards_stream) {
         }
         const name = card_info.name;
         if (!(name in cardData)) {
+            priceDict = {};
+            priceDict[card_info.set] = get_card_price(card_info);
             cardData[name] = {
                 color: determineColor(card_info),
-                sets: [card_info.set]
+                sets: [card_info.set],
+                prices: priceDict
             }
         } else {
-            cardData[name].sets.push(card_info.set)
+            cardData[name].sets.push(card_info.set);
+            cardData[name].prices[card_info.set] = get_card_price(card_info);
         }
     });
     pipeline.on('end', async () => {
