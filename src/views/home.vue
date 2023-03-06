@@ -47,6 +47,9 @@ export default {
         this.axios.get('/api/init').then(res => {
             this.card_names = res.data.card_names;
             this.orders = res.data.order_data;
+            this.orders.forEach( order => {
+                if (order.toPick == null) this.$set(order, "toPick", false);
+            });
         });
     },
     methods: {

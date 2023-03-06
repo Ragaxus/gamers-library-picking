@@ -53,16 +53,17 @@ export default {
               .then(resp => {
                     let new_order_info = resp.data;
                     const i = this.orders.findIndex(order => order._id === _id );
-                    this.orders[i] = new_order_info;
+                    this.orders[i] = {...this.orders[i], new_order_info};
                     this.$forceUpdate();
               });
         },
         updatePicks(_id) {
             let order = this.orders.find(order => order._id == _id);
-            order.toPick = !(order.toPick);
+            this.$set(order, "toPick", !order.toPick);
         },
         modifyFound(cardName, amount) {
             let activeOrders = this.orders.filter(order => order.toPick == true);
+            
             var orderToUpdate;
             if (amount < 0) {
                 activeOrders.reverse();
@@ -74,14 +75,15 @@ export default {
             if (orderToUpdate) {
                 if (!orderToUpdate.cards_found) { Vue.set(orderToUpdate.cards_found, 0, { name: cardName, quantity: amount }); }
                 else {
-                    let existing_card_found = orderToUpdate.cards_found.find(card_found => card_found.name == cardName);
-                    if (!existing_card_found) {
+                    let existing_card_found_idx = orderToUpdate.cards_found.findIndex(card_found => card_found.name == cardName);
+                    if (existing_card_found_idx == -1) {
                         orderToUpdate.cards_found.push({ name: cardName, quantity: amount });
                     }
                     else {
+                        let existing_card_found = orderToUpdate.cards_found[existing_card_found_idx];
                         existing_card_found.quantity += amount;
                         if (existing_card_found.quantity == 0) {
-                            orderToUpdate.cards_found.splice(existing_card_found, 1);
+                            orderToUpdate.cards_found.splice(existing_card_found_idx, 1);
                         }
                     }
                 }

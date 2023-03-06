@@ -45,7 +45,6 @@ async function addCardMetadataToOrders(orders) {
         card.color = ""
       }
     });
-    order.toPick = false;
     if (!order.cards_found) {
       order.cards_found = [];
     }

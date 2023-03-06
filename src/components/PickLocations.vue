@@ -51,9 +51,12 @@ export default {
         modifyPicked(name, amount) {
             let newVal = (name in this.cardspicked) ? this.cardspicked[name] : 0;
             newVal += amount;
+            if (newVal < 0) newVal = 0;
+            else {
+                this.$emit("modify-picked", name, amount);
+            }
             this.$set(this.cardspicked, name, newVal);
             this.$forceUpdate();
-            this.$emit("modify-picked", name, amount);
         },
         pickedStatus(card) {
             let currentlyPicked = (card.name in this.cardspicked) ? this.cardspicked[card.name] : 0;
