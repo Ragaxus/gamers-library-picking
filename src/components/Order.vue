@@ -36,7 +36,9 @@ export default {
                 'G': "Green"
             },
             editingComment: false,
-            editingOrder: false
+            editingOrder: false,
+            collapsed: true,
+            foundCollapsed: true
         }
     },
     mounted() {
@@ -56,6 +58,15 @@ export default {
                 });
                 return missingCards;
             }
+        },
+        numberOfCards() {
+            return this.info.cards.reduce((acc, card) => acc + parseInt(card.quantity), 0);
+        },
+        cardOrCards() {
+            return (this.numberOfCards > 1) ? "cards" : "card";
+        },
+        numCardsFound() {
+            return this.info.cards_found.reduce((acc, card) => acc + parseInt(card.quantity), 0);
         }
     },
     methods: {
@@ -104,52 +115,70 @@ export default {
         <div class="order-view-info" v-if="!editingOrder">
             <button @click="editingOrder = !editingOrder">Edit</button>
             <div class="order-cards-ordered">
-                <div v-for="card in info.cards" class="order-view-card">
-                    {{ card.quantity }} {{ card.name }} ({{ color_lookup[card.color] }})
-                    <div class="set-badges">
-                        <set-badge v-for="set in card.sets" :set="set" :key="set"></set-badge>
+                <div class="order-cards-ordered-header">
+                    <span>{{ numberOfCards }} {{ cardOrCards }} in order </span>
+                    <button @click="collapsed = !collapsed">
+                        {{ collapsed ? "Show" : "Hide" }}
+                    </button>
+                </div>
+                <div v-if="!collapsed" class="order-cards-ordered-allcards">
+                    <div v-for="card in info.cards" class="order-view-card">
+                        {{ card.quantity }} {{ card.name }} ({{ color_lookup[card.color] }})
+                        <div class="set-badges">
+                            <set-badge v-for="set in card.sets" :set="set" :key="set"></set-badge>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div v-if="info.cards_found && showFound" class="order-cards-found">
-                <span>Cards found: <button @click="showFound = !showFound">Show missing</button> </span>
-                <div v-for="card in info.cards_found" class="order-cards-found-card">
-                    <span v-if="!card.edit" @click="$set(card, 'edit', !card.edit)"> 
-                        {{ card.quantity }} {{ card.name }}
-                    </span>
-                    <span v-if="card.edit"> 
-                        <input type="number" v-model.number="card.quantity" /> {{ card.name }} 
-                        <button
-                            @click="$set(card, 'edit', !card.edit); updateOrderInfo()"> ✅ 
-                        </button>
-                    </span>
-                </div>
-            </div>
-            <div v-if="info.cards_found && !showFound" class="order-cards-missing">
-                <span>Cards missing: <button @click="showFound = !showFound">Show/edit found</button> </span>
-                <div v-for="card in missingCards" class="order-cards-missing-card">
-                    <span> {{ card.quantity }} {{ card.name }} </span>
-                </div>
-            </div>
-            <div class="order-comment">
-                <div v-if="!editingComment">
-                    <p v-if="info.comment && !editingComment"> Notes: {{ order.comment }}</p>
-                    <button @click="editingComment = !editingComment">Edit notes</button>
-                </div>
-                <div v-if="editingComment">
-                    <textarea id="order-edit-comment" v-model="order.comment"></textarea>
-                    <button @click="editComment">✅</button>
-                </div>
-            </div>
-            <label for="pick">Pick order</label>
-            <input id="pick" type="checkbox" :checked="info.toPick" @change="updatePicks()" />
         </div>
+        <div v-if="info.cards_found" class="order-cards-found">
+            <div class="order-cards-found-header">
+                <span>{{ numCardsFound }} cards found </span>
+                <button @click="foundCollapsed = !foundCollapsed">
+                    {{ foundCollapsed ? "Show cards found info" : "Hide cards found info" }}
+                </button>
+            </div>
+            <div v-if="!foundCollapsed" class="order-cards-found-info">
+                <button @click="showFound = !showFound">
+                    {{ showFound ? "Show missing" : "Show/edit found" }}
+                </button>
+                <div v-if="showFound" class="order-cards-found-found">
+                    <div v-for="card in info.cards_found" class="order-cards-found-card">
+                        <span v-if="!card.edit" @click="$set(card, 'edit', !card.edit)">
+                            {{ card.quantity }} {{ card.name }}
+                        </span>
+                        <span v-if="card.edit">
+                            <input type="number" v-model.number="card.quantity" /> {{ card.name }}
+                            <button @click="$set(card, 'edit', !card.edit); updateOrderInfo()"> ✅
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <div v-else class="order-cards-found-missing">
+                    <div v-for="card in missingCards" class="order-cards-missing-card">
+                        <span> {{ card.quantity }} {{ card.name }} </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="order-comment">
+            <div v-if="!editingComment">
+                <p v-if="info.comment && !editingComment"> Notes: {{ order.comment }}</p>
+                <button @click="editingComment = !editingComment">Edit notes</button>
+            </div>
+            <div v-if="editingComment">
+                <textarea id="order-edit-comment" v-model="order.comment"></textarea>
+                <button @click="editComment">✅</button>
+            </div>
+        </div>
+        <label for="pick">Pick order</label>
+        <input id="pick" type="checkbox" :checked="info.toPick" @change="updatePicks()" />
         <div class="order-edit" v-if="editingOrder">
             <submit-new-order :cardnames="cardNames" :existingOrder="order" @new-order="updateOrderInfo"
                 @close="editingOrder = !editingOrder">
             </submit-new-order>
         </div>
-</div>
+    </div>
 </template>
 
 <style>

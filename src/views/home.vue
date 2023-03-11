@@ -55,7 +55,8 @@ export default {
     methods: {
         addNewOrder(newOrder) {
             this.axios.post('/api/order', newOrder).then(res => {
-               this.orders.push(res.data);
+               let newOrder = {...res.data, toPick: false};
+               this.orders.push(newOrder);
             }); 
         }
     }
