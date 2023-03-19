@@ -5,7 +5,10 @@ var router = express.Router();
 var bodyParser = require('body-parser');
 var passport = require('passport');
 var base64url = require('base64url');
-var BoxInventory = require('../utils/box-inventory');
+
+
+var env_path = (process.env.NODE_ENV == 'production') ? ".env" : "dev.env";
+require('dotenv').config({path: env_path});
 
 //Mongoose
 var Order = require('../config/models/order').connection.model('Order');
@@ -13,6 +16,7 @@ var CardMetadata = require('../config/models/card-metadata').connection.model('C
 var User = require('../config/models/user').connection.model('User');
 var Box = require('../config/models/box').connection.model('Box');
 var SetDirectory = require('../config/models/set-directory').connection.model('SetDirectory');
+var BoxInventory = require('../utils/box-inventory');
 
 async function getActiveOrders() {
   return await Order.find({}).where('status').nin(['sold', 'cancelled']).lean();

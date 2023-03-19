@@ -55,7 +55,6 @@ export default {
                     const i = this.orders.findIndex(order => order._id === _id );
                     this.orders[i] = {...this.orders[i], new_order_info};
                     if (!this.shouldDisplayOrder(this.orders[i])) {
-                        console.log("Should not display order any longer");
                         let order = this.orders[i];
                         this.$set(order, "toPick", false);
                     }

@@ -1,8 +1,6 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
-require('dotenv').config();
-
 const connection = mongoose.createConnection(process.env.DB_CONN_STRING);
 
 // user model

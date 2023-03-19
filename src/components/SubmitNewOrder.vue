@@ -124,17 +124,29 @@ export default {
             <label for="comment">Additional notes: </label>
             <textarea id="txtComment" v-model="order.comment"></textarea>
         </div>
-        <button @click="submit" :disabled=orderIsInvalid>Submit Order</button>
+        <button id="btnSubmit" @click="submit" :disabled=orderIsInvalid>Submit Order</button>
 </div>
 </template>
 
 <style>
-div.newItem {
-    display: inline;
+#newItem,#massEntry,#comment{
+    margin: 5px 0px;
+}
+
+#comment *{
+    display:block;
 }
 
 div#cards-in-order {
     height: 150px;
     overflow: scroll;
+}
+
+textarea {
+    width: 98%;
+}
+
+#btnSubmit {
+    margin-top: 10px;
 }
 </style>

@@ -14,7 +14,7 @@ export default {
   <span>{{ quantity }}</span> 
   <div class="order-entry-name">
     <span>{{ name }}</span>
-    <span class="original-name" v-if="originalname != name">(customer entered: {{ originalname }})</span>
+    <span class="original-name" v-if="(originalname != name) && (!!originalname)">(customer entered: {{ originalname }})</span>
   </div>
   <button @click="deleteEntry">Delete</button>
   </div>
