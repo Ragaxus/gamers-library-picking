@@ -1,6 +1,6 @@
 <script>
 export default {
-    props: ["set"]
+    props: ["set", "price"]
 }
 </script>
 
@@ -8,18 +8,22 @@ export default {
     <div class="set-badge">
         <img :src="`/images/set-icons/${set}.svg`" />
         <span> {{ set.toUpperCase() }}</span>
+        <div id="divPrice" v-if="price != null">
+            ${{ price }}
+        </div>
     </div>
 </template>
 
 <style>
-div.set-badges {
-    display: flex;
-    overflow-x: auto;
-
+#divPrice {
+    border-left: thin solid white;
+    margin-left: 2px;
+    padding-left: 2px;
 }
 
 div.set-badge {
-    flex: none;
+    display: flex;
+    justify-content: center;
     font-size: 15px;
     margin-right: 5px;
     background-color: #4b5257;
@@ -29,7 +33,8 @@ div.set-badge {
 }
 
 div.set-badge img {
-    height: 15px;
+    padding-right: 5px;
+    height: 20px;
     vertical-align: top;
     filter: invert(92%) sepia(100%) saturate(0%) hue-rotate(202deg) brightness(106%) contrast(106%);
 }

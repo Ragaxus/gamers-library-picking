@@ -34,7 +34,7 @@ async function addCardMetadataToOrders(orders) {
       'name': {
         $in: order_card_names
       }
-    });
+    }).lean();
     card_metadata = card_metadata_docs.reduce(function (data, card_doc) {
       data[card_doc.name] = card_doc;
       return data;
@@ -42,8 +42,7 @@ async function addCardMetadataToOrders(orders) {
     order.cards.forEach(async function (card) {
       card_doc = card_metadata[card.name];
       if (card_doc) {
-        card.sets = card_doc.sets;
-        card.color = card_doc.color;
+        Object.assign(card, card_doc);
       } else {
         card.sets = []
         card.color = ""

@@ -89,6 +89,11 @@ export default {
         editComment() {
             this.editingComment = !this.editingComment;
             this.updateOrderInfo();
+        },
+        printingInfo(card) {
+            let printings = card.sets.map( set => { return {set: set, price: parseFloat(card.prices[set])}});
+            printings.sort((a,b) => a.price - b.price);
+            return printings;
         }
     },
     watch: {
@@ -125,7 +130,7 @@ export default {
                     <div v-for="card in info.cards" class="order-view-card">
                         {{ card.quantity }} {{ card.name }} ({{ color_lookup[card.color] }})
                         <div class="set-badges">
-                            <set-badge v-for="set in card.sets" :set="set" :key="set"></set-badge>
+                            <set-badge v-for="{set, price} in printingInfo(card)" :set="set" :price="price" :key="set"></set-badge>
                         </div>
                     </div>
                 </div>
@@ -187,6 +192,10 @@ div.order-view {
     width: 500px;
 }
 
+.set-badges {
+    display: flex;
+    overflow-x: auto;
+}
 
 div.status-picked {
     background: gold;
