@@ -110,6 +110,7 @@ export default {
                 <option value="placed">Placed</option>
                 <option value="picked">Picked</option>
                 <option value="priced">Priced</option>
+                <option value="contacted">Contacted</option>
                 <option value="sold">Sold</option>
                 <option value="cancelled">Cancelled</option>
             </select>

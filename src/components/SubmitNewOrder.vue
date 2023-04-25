@@ -8,6 +8,7 @@ export default {
         return {
             order: {
                 customer_name: "",
+                contact_info: "",
                 cards: [],
                 comment: ""
             },
@@ -105,8 +106,16 @@ export default {
         <div class="modal-default-button" @click="$emit('close')">
             X
         </div>
-        <label for="customer-name">Customer Name: </label>
-        <input type="text" name="customer-name" v-model="order.customer_name" />
+        <div class="customer-info">
+            <div>
+                <label for="customer-name">Customer Name: </label>
+                <input type="text" name="customer-name" v-model="order.customer_name" />
+            </div>
+            <div>
+                <label for="contact-info">Contact info: </label>
+                <input type="text" name="contact-info" v-model="order.contact_info" />
+            </div>
+        </div>
         <div id="cards-in-order">
             <order-entry v-for="(entry, index) in order.cards" :key="index" :id="index" :quantity="entry.quantity"
                 :name="entry.name" :originalname="entry.original_name" @delete-entry="deleteItem"> </order-entry>
@@ -129,6 +138,16 @@ export default {
 </template>
 
 <style>
+.customer-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.customer-info label {
+    padding-right: 5px;
+}
+
 #newItem,#massEntry,#comment{
     margin: 5px 0px;
 }

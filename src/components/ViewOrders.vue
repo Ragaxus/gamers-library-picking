@@ -122,6 +122,7 @@ export default {
         <div class="display-options">
             <input type="radio" v-model="display_criteria" value="placed" />Placed orders
             <input type="radio" v-model="display_criteria" value="picked" />Picked orders
+            <input type="radio" v-model="display_criteria" value="contacted" />Contacted orders
             <input type="radio" v-model="display_criteria" value="all" />All orders
         </div>
         <input type="checkbox" v-model="pick_all" @change="toggleAllVisibleOrders"/> Set picking for all orders
