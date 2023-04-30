@@ -74,7 +74,14 @@ export default {
                 orderToUpdate = activeOrders.find(order => order.cards_found.some(card => card.name == cardName));
             }
             else {
-                orderToUpdate = activeOrders.find(order => order.cards.some(card => card.name == cardName));
+                orderToUpdate = activeOrders.find(order => {
+                    let cardOrderLine = order.cards.find(card => card.name == cardName);
+                    if (cardOrderLine == null) return false;
+                    let quantityOfNameOrdered = cardOrderLine.quantity;
+                    let cardsOfNameFoundForOrder = order.cards_found.find(foundEntry => foundEntry.name == cardName);
+                    if (cardsOfNameFoundForOrder != null && cardsOfNameFoundForOrder.quantity >= quantityOfNameOrdered) return false;
+                    return true;
+                });
             }
             if (orderToUpdate) {
                 if (!orderToUpdate.cards_found) { Vue.set(orderToUpdate.cards_found, 0, { name: cardName, quantity: amount }); }
