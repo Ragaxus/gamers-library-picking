@@ -10,6 +10,7 @@ var boxSchema = new Schema({
     startCard: Object,
     endCard: Object,
     sets: Array,
+    releaseDate: Date,
 });
 
 connection.model('Box', boxSchema);
