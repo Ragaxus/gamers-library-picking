@@ -7,7 +7,7 @@ export default {
     },
     data() {
         return {
-            boxData: {},
+            boxData: [],
             color_lookup: {
                 'L': "Land",
                 'C': "Colorless",
@@ -17,12 +17,19 @@ export default {
                 'B': "Black",
                 'R': "Red",
                 'G': "Green"
-            }
+            },
+            types: [
+                "core",
+                "standard",
+                "supplemental"
+            ],
+            ascending: true,
+            groupByType: true
         }
     },
     computed: {
         cardstopick() {
-            var cards = this.orderstopick 
+            var cards = this.orderstopick
                 .map(order => order.cards)
                 .flat();
 
@@ -40,6 +47,20 @@ export default {
                 });
 
             return cards_combined;
+        },
+        sortedBoxes() {
+            return this.boxData.sort((a, b) => {
+                // compare the type first
+                let typeA = this.types.indexOf(a.type);
+                let typeB = this.types.indexOf(b.type);
+                if (this.groupByType && typeA !== typeB) return typeA - typeB;
+                // if the type is the same, compare the release date
+                if (this.ascending) {
+                    return a.releaseDate.localeCompare(b.releaseDate);
+                } else {
+                    return b.releaseDate.localeCompare(a.releaseDate);
+                }
+            });
         }
     },
     methods: {
@@ -70,7 +91,8 @@ export default {
             return this.orderstopick
                 .filter(order => order.cards.some(card => card.name === cardName))
                 .map(order => order.customer_name);
-        }
+        },
+        toggleOrder() { this.ascending = !this.ascending; }
     },
     watch: {
         orderstopick(newVal, oldVal) { this.updateBoxIndex(); }
@@ -78,8 +100,11 @@ export default {
 }
 </script>
 <template>
-    <div class="pick-locations" v-if="this.cardstopick">
-        <div v-for="boxinfo in this.boxData" class="pick-locations-box">
+    <div class="pick-locations" v-if="this.cardstopick.length > 0">
+        <button @click="toggleOrder">Reverse order</button>
+        <label for="groupByType">Group by type</label>
+        <input id="groupByType" type="checkbox" v-model="groupByType" />
+        <div v-for="boxinfo in sortedBoxes" class="pick-locations-box">
             <div class="pick-locations-box-header">
                 <h2>{{ boxinfo.box_name }}: </h2>
             </div>
@@ -113,5 +138,9 @@ div.completed span {
     text-decoration: line-through;
     font-style: italic;
     color: gray;
+}
+
+.pick-locations button {
+    margin-right: 5px;
 }
 </style>

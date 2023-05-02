@@ -50,16 +50,16 @@ export default {
         },
         updateOrderInfo(_id, order_info) {
             this.axios.put(`/api/order/${_id}`, order_info)
-              .then(resp => {
+                .then(resp => {
                     let new_order_info = resp.data;
-                    const i = this.orders.findIndex(order => order._id === _id );
-                    this.orders[i] = {...this.orders[i], new_order_info};
+                    const i = this.orders.findIndex(order => order._id === _id);
+                    this.orders[i] = { ...this.orders[i], new_order_info };
                     if (!this.shouldDisplayOrder(this.orders[i])) {
                         let order = this.orders[i];
                         this.$set(order, "toPick", false);
                     }
                     this.$forceUpdate();
-              });
+                });
         },
         updatePicks(_id) {
             let order = this.orders.find(order => order._id == _id);
@@ -67,7 +67,7 @@ export default {
         },
         modifyFound(cardName, amount) {
             let activeOrders = this.orders.filter(order => order.toPick == true);
-            
+
             var orderToUpdate;
             if (amount < 0) {
                 activeOrders.reverse();
@@ -114,32 +114,40 @@ export default {
                     this.$set(order, "toPick", this.pick_all)
                 }
             });
+        },
+        shouldShowPickLocations() {
+            return this.ordersToPick.length > 0;
         }
     }
 }
 </script>
 
 <template>
-    <div id="vue-view-orders">
-        <div class="search-bar">
-            <input id="show-inactive" v-model="search_criteria.showInactiveOrders" type="checkbox" />
-            <label for="show_inactive">Show sold and cancelled orders</label>
-            <button @click="search">Search</button>
-        </div>
-        <div class="display-options">
-            <input type="radio" v-model="display_criteria" value="placed" />Placed orders
-            <input type="radio" v-model="display_criteria" value="picked" />Picked orders
-            <input type="radio" v-model="display_criteria" value="contacted" />Contacted orders
-            <input type="radio" v-model="display_criteria" value="all" />All orders
-        </div>
-        <input type="checkbox" v-model="pick_all" @change="toggleAllVisibleOrders"/> Set picking for all orders
-        <div class="order-list">
-            <Order v-for="(order, index) in orders" v-if="shouldDisplayOrder(order)" :key="index" :info="order" :id="index" :card-names="cardnames"
-                @update-order-info="updateOrderInfo" @update-picks="updatePicks"></Order>
-        </div>
-        <pick-locations :orderstopick="ordersToPick" :cardspicked="cardsPicked"
-            @modify-picked="modifyFound"></pick-locations>
-    </div>
+    <b-tabs content-class="mt-3" id="vue-view-orders">
+        <b-tab title="Orders" id="view-orders">
+            <div class="search-bar">
+                <input id="show-inactive" v-model="search_criteria.showInactiveOrders" type="checkbox" />
+                <label for="show-inactive">Show sold and cancelled orders</label>
+                <button @click="search">Search</button>
+            </div>
+            <div class="display-options">
+                <input type="radio" v-model="display_criteria" value="placed" />Placed orders
+                <input type="radio" v-model="display_criteria" value="picked" />Picked orders
+                <input type="radio" v-model="display_criteria" value="contacted" />Contacted orders
+                <input type="radio" v-model="display_criteria" value="all" />All orders
+            </div>
+            <input type="checkbox" v-model="pick_all" @change="toggleAllVisibleOrders" /> Set picking for all orders
+            <div class="order-list">
+                <Order v-for="(order, index) in orders" v-if="shouldDisplayOrder(order)" :key="index" :info="order"
+                    :id="index" :card-names="cardnames" @update-order-info="updateOrderInfo" @update-picks="updatePicks">
+                </Order>
+            </div>
+        </b-tab>
+        <b-tab title="Pick Locations" :disabled="!shouldShowPickLocations()" id="pick-locations">
+            <pick-locations :orderstopick="ordersToPick" :cardspicked="cardsPicked"
+                @modify-picked="modifyFound"></pick-locations>
+        </b-tab>
+    </b-tabs>
 </template>
 
 <style>

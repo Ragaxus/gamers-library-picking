@@ -82,8 +82,8 @@ class BoxInventory {
                 this.boxes.filter(box => box.type == set_type).forEach(box => {
                     if (this.boxHasCard(box, card_info)) {
                         var name = box.name;
-                        if (!(name in boxIndex)) {boxIndex[name] = [];}
-                        boxIndex[name].push(card_info);
+                        if (!(name in boxIndex)) {boxIndex[name] = {cards: [], type: set_type, releaseDate: box.releaseDate};}
+                        boxIndex[name].cards.push(card_info);
                     }
                 })
             });
@@ -91,7 +91,8 @@ class BoxInventory {
 
         Object.entries(boxIndex).forEach(boxEntry => {
             let box_name = boxEntry[0];
-            let cards_in_box = boxEntry[1];
+            let box_info = boxEntry[1];
+            let cards_in_box = box_info.cards;
             var set_and_color_index = {}; 
             set_and_color_index = cards_in_box.reduce((acc, card) => {
                 if (!(card.set in acc)) {
@@ -119,13 +120,10 @@ class BoxInventory {
                 return {set: sc_entry[0], cards_by_color};
             })
             .sort((sca, scb) => { return set_order.indexOf(sca.set) - set_order.indexOf(scb.set) } );
-            result.push({box_name, cards_by_set});
+            let type = box_info.type;
+            let releaseDate = box_info.releaseDate;
+            result.push({box_name, type, releaseDate, cards_by_set});
         })
-        result.sort((boxInfoA, boxInfoB) => {
-            let boxA = this.boxes.find(box => box.name === boxInfoA.box_name)
-            let boxB = this.boxes.find(box => box.name === boxInfoB.box_name)
-            return boxA._id.toString().localeCompare(boxB._id.toString());
-        });
         return result;
     }
 }
