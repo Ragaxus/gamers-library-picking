@@ -9,7 +9,8 @@ export default {
                 showInactiveOrders: false
             },
             display_criteria: "",
-            pick_all: false
+            pick_all: false,
+            showOrders: false
         }
     },
     components: {
@@ -53,7 +54,7 @@ export default {
                 .then(resp => {
                     let new_order_info = resp.data;
                     const i = this.orders.findIndex(order => order._id === _id);
-                    this.orders[i] = { ...this.orders[i], new_order_info };
+                    this.orders[i] = Object.assign(this.orders[i], new_order_info);
                     if (!this.shouldDisplayOrder(this.orders[i])) {
                         let order = this.orders[i];
                         this.$set(order, "toPick", false);
@@ -104,8 +105,10 @@ export default {
         },
         search() {
             var vue = this;
+            vue.showOrders = false;
             this.axios.get(`/api/order`, { params: this.search_criteria }).then(function (response) {
                 vue.orders = response.data;
+                vue.showOrders = true;
             });
         },
         toggleAllVisibleOrders() {
@@ -117,6 +120,13 @@ export default {
         },
         shouldShowPickLocations() {
             return this.ordersToPick.length > 0;
+        }
+    },
+    watch: {
+        orders(newOrders, oldOrders) {
+            if (newOrders.length > 0) {
+                this.showOrders = true;
+            }
         }
     }
 }
@@ -137,7 +147,10 @@ export default {
                 <input type="radio" v-model="display_criteria" value="all" />All orders
             </div>
             <input type="checkbox" v-model="pick_all" @change="toggleAllVisibleOrders" /> Set picking for all orders
-            <div class="order-list">
+            <div v-if="!this.showOrders" class="text-center m-5">
+                <b-spinner></b-spinner>
+            </div>
+            <div v-if="this.showOrders" class="order-list">
                 <Order v-for="(order, index) in orders" v-if="shouldDisplayOrder(order)" :key="index" :info="order"
                     :id="index" :card-names="cardnames" @update-order-info="updateOrderInfo" @update-picks="updatePicks">
                 </Order>
