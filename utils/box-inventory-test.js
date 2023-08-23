@@ -7,6 +7,11 @@ var cards = [
         name: "Felidar Guardian",
         color: "W",
         sets: ["mb1", "aer"]
+    },
+    {
+        name: "Forest",
+        color: "L",
+        sets: ["aer", "emn", "lots"]
     }
 ];
 

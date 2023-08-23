@@ -71,7 +71,12 @@ class BoxInventory {
         var result = []
         if (!cards) return result;
         var boxIndex = {};
+        const basicsBox = {name: "Basics", type: "basics", releaseDate: new Date(2099, 11, 31)};
         cards.forEach((card, cardIdx) => {
+            if (["Plains", "Island", "Swamp", "Mountain", "Forest"].includes(card.name)) {
+                addToBoxIndex(basicsBox, card);
+                return;
+            }
             card.sets.forEach(set => {
                 var set_type = this.getSetType(set);
                 if (!set_type) return;
@@ -82,8 +87,7 @@ class BoxInventory {
                 this.boxes.filter(box => box.type == set_type).forEach(box => {
                     if (this.boxHasCard(box, card_info)) {
                         var name = box.name;
-                        if (!(name in boxIndex)) {boxIndex[name] = {cards: [], type: set_type, releaseDate: box.releaseDate};}
-                        boxIndex[name].cards.push(card_info);
+                        addToBoxIndex(box, card_info)
                     }
                 })
             });
@@ -125,6 +129,12 @@ class BoxInventory {
             result.push({box_name, type, releaseDate, cards_by_set});
         })
         return result;
+
+        function addToBoxIndex(box, card_info) {
+            var name = box.name;
+            if (!(name in boxIndex)) { boxIndex[name] = { cards: [], type: box.type, releaseDate: box.releaseDate }} 
+            boxIndex[name].cards.push(card_info)
+        }
     }
 }
 

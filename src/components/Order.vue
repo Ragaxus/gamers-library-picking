@@ -131,7 +131,7 @@ export default {
                     <div v-for="card in info.cards" class="order-view-card">
                         {{ card.quantity }} {{ card.name }} ({{ color_lookup[card.color] }})
                         <div class="set-badges">
-                            <set-badge v-for="{set, price} in printingInfo(card)" :set="set" :price="price" :key="set"></set-badge>
+                            <set-badge v-for="{set, price} in printingInfo(card)" :set="set" :key="set"></set-badge>
                         </div>
                     </div>
                 </div>

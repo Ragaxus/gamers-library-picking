@@ -21,10 +21,11 @@ export default {
             types: [
                 "core",
                 "standard",
-                "supplemental"
+                "supplemental",
+                "basics"
             ],
             ascending: true,
-            groupByType: true
+            groupByType: true,
         }
     },
     computed: {
@@ -47,6 +48,22 @@ export default {
                 });
 
             return cards_combined;
+        },
+        priceData() {
+            var availableSets = this.boxData.map(box => box.cards_by_set.map(setInfo => setInfo.set)).flat();
+            var cardPrices = this.orderstopick.reduce((acc, order) => {
+                order.cards.forEach(card => { 
+                    acc[card.name] = card.prices;
+                    var cheapestSet = Object.keys(card.prices)
+                      .filter(set => availableSets.includes(set))
+                      .sort((setA, setB) => card.prices[setA] - card.prices[setB])
+                      [0];
+                    acc[card.name]["cheapest"] = cheapestSet;
+                });
+                return acc;
+            }, {});
+
+            return cardPrices;
         },
         sortedBoxes() {
             return this.boxData.sort((a, b) => {
@@ -87,6 +104,9 @@ export default {
         isCardCompleted(card) {
             return (card.name in this.cardspicked && this.cardspicked[card.name] >= card.quantity);
         },
+        isCheapest(cardName, set) {
+            return set === this.priceData[cardName]["cheapest"]
+        },
         ordersOfCard(cardName) {
             return this.orderstopick
                 .filter(order => order.cards.some(card => card.name === cardName))
@@ -114,8 +134,8 @@ export default {
                     <div v-for="boxsetcolor in boxset.cards_by_color">
                         <h3>{{ color_lookup[boxsetcolor.color] }}:</h3>
                         <div class="card-in-orders" v-for="card in boxsetcolor.cards"
-                            v-bind:class="{ completed: isCardCompleted(card) }">
-                            <span>{{ card.name }}, {{ pickedStatus(card) }}</span>
+                            v-bind:class="{ completed: isCardCompleted(card), cheapest: isCheapest(card.name, boxset.set) }">
+                            <span>{{ card.name }} ({{ priceData[card.name][boxset.set] }}), {{ pickedStatus(card) }}</span>
                             <button @click="modifyPicked(card.name, 1)">⬆️</button>
                             <button @click="modifyPicked(card.name, -1)">⬇️</button>
                             <ul class="card-in-orders-order-names">
@@ -138,6 +158,10 @@ div.completed span {
     text-decoration: line-through;
     font-style: italic;
     color: gray;
+}
+
+div.cheapest span {
+    color: blue;
 }
 
 .pick-locations button {
