@@ -52,10 +52,10 @@ export default {
         priceData() {
             var availableSets = this.boxData.map(box => box.cards_by_set.map(setInfo => setInfo.set)).flat();
             var cardPrices = this.orderstopick.reduce((acc, order) => {
-                order.cards.forEach(card => { 
+                order.cards.filter(card => !!card.name).forEach(card => { 
                     acc[card.name] = card.prices;
                     var cheapestSet = Object.keys(card.prices)
-                      .filter(set => availableSets.includes(set))
+                      .filter(set => availableSets.includes(set) && !!card.prices[set])
                       .sort((setA, setB) => card.prices[setA] - card.prices[setB])
                       [0];
                     acc[card.name]["cheapest"] = cheapestSet;
@@ -135,7 +135,7 @@ export default {
                         <h3>{{ color_lookup[boxsetcolor.color] }}:</h3>
                         <div class="card-in-orders" v-for="card in boxsetcolor.cards"
                             v-bind:class="{ completed: isCardCompleted(card), cheapest: isCheapest(card.name, boxset.set) }">
-                            <span>{{ card.name }} ({{ priceData[card.name][boxset.set] }}), {{ pickedStatus(card) }}</span>
+                            <span>{{ card.name }} (${{ priceData[card.name][boxset.set] }}), {{ pickedStatus(card) }}</span>
                             <button @click="modifyPicked(card.name, 1)">⬆️</button>
                             <button @click="modifyPicked(card.name, -1)">⬇️</button>
                             <ul class="card-in-orders-order-names">

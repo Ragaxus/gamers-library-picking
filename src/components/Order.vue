@@ -38,7 +38,7 @@ export default {
             editingComment: false,
             editingOrder: false,
             collapsed: true,
-            foundCollapsed: true
+            missingCollapsed: true
         }
     },
     mounted() {
@@ -91,9 +91,21 @@ export default {
             this.updateOrderInfo();
         },
         printingInfo(card) {
-            let printings = card.sets.map( set => { return {set: set, price: parseFloat(card.prices[set])}});
-            printings.sort((a,b) => a.price - b.price);
+            let printings = card.sets.map(set => { return { set: set, price: parseFloat(card.prices[set]) } });
+            printings.sort((a, b) => a.price - b.price);
             return printings;
+        },
+        getCardsFound(cardName) {
+            const entry = this.info.cards_found.find(item => item.name === cardName);
+            return entry ? entry.quantity : 0;
+        },
+        updateCardsFound(cardName, newQuantity) {
+            const entry = this.info.cards_found.find(item => item.name === cardName);
+            if (entry) {
+                entry.quantity = newQuantity;
+            } else {
+                this.info.cards_found.push({ name: cardName, quantity: newQuantity });
+            }
         }
     },
     watch: {
@@ -129,9 +141,21 @@ export default {
                 </div>
                 <div v-if="!collapsed" class="order-cards-ordered-allcards">
                     <div v-for="card in info.cards" class="order-view-card">
-                        {{ card.quantity }} {{ card.name }} ({{ color_lookup[card.color] }})
+                        <div class="order-card-summary" @click="!card.edit && $set(card, 'edit', !card.edit)">
+                            <span v-if="!card.edit">
+                                {{ info.cards_found.find((foundCard => foundCard.name === card.name))?.quantity || 0 }}
+                            </span>
+                            <div  v-if="card.edit">
+                                <input
+                                    :value="getCardsFound(card.name)" 
+                                    @input="updateCardsFound(card.name, $event.target.value)">
+                                <button @click="$set(card, 'edit', !card.edit); updateOrderInfo()"> ✅
+                                </button>
+                            </div>
+                            &nbsp;/ {{ card.quantity }} {{ card.name }} ({{ color_lookup[card.color] }})
+                        </div>
                         <div class="set-badges">
-                            <set-badge v-for="{set, price} in printingInfo(card)" :set="set" :key="set"></set-badge>
+                            <set-badge v-for="{ set, price } in printingInfo(card)" :set="set" :key="set"></set-badge>
                         </div>
                     </div>
                 </div>
@@ -139,28 +163,13 @@ export default {
         </div>
         <div v-if="info.cards_found" class="order-cards-found">
             <div class="order-cards-found-header">
-                <span>{{ numCardsFound }} cards found </span>
-                <button @click="foundCollapsed = !foundCollapsed">
-                    {{ foundCollapsed ? "Show cards found info" : "Hide cards found info" }}
+                <span>{{ numberOfCards - numCardsFound }} missing cards </span>
+                <button @click="missingCollapsed = !missingCollapsed">
+                    {{ missingCollapsed ? "Show cards missing info" : "Hide cards missing info" }}
                 </button>
             </div>
-            <div v-if="!foundCollapsed" class="order-cards-found-info">
-                <button @click="showFound = !showFound">
-                    {{ showFound ? "Show missing" : "Show/edit found" }}
-                </button>
-                <div v-if="showFound" class="order-cards-found-found">
-                    <div v-for="card in info.cards_found" class="order-cards-found-card">
-                        <span v-if="!card.edit" @click="$set(card, 'edit', !card.edit)">
-                            {{ card.quantity }} {{ card.name }}
-                        </span>
-                        <span v-if="card.edit">
-                            <input type="number" v-model.number="card.quantity" /> {{ card.name }}
-                            <button @click="$set(card, 'edit', !card.edit); updateOrderInfo()"> ✅
-                            </button>
-                        </span>
-                    </div>
-                </div>
-                <div v-else class="order-cards-found-missing">
+            <div v-if="!missingCollapsed" class="order-cards-found-info">
+                <div class="order-cards-found-missing">
                     <div v-for="card in missingCards" class="order-cards-missing-card">
                         <span> {{ card.quantity }} {{ card.name }} </span>
                     </div>
@@ -191,6 +200,14 @@ export default {
 div.order-view {
     border: 1px solid black;
     width: 500px;
+}
+
+div.order-card-summary {
+    display: flex;
+}
+
+div.order-card-summary input {
+    width: 30px;
 }
 
 .set-badges {
