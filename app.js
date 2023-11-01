@@ -28,6 +28,7 @@ app.use(session({
 }))
 app.use(passport.authenticate('session'));
 
+app.use('/api/boxes', boxAdminRouter);
 app.use('/api', indexRouter);
 
 if(process.env.NODE_ENV === 'production') {
