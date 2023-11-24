@@ -52,14 +52,7 @@ export default {
         updateOrderInfo(_id, order_info) {
             this.axios.put(`/api/order/${_id}`, order_info)
                 .then(resp => {
-                    let new_order_info = resp.data;
-                    const i = this.orders.findIndex(order => order._id === _id);
-                    this.orders[i] = Object.assign(this.orders[i], new_order_info);
-                    if (!this.shouldDisplayOrder(this.orders[i])) {
-                        let order = this.orders[i];
-                        this.$set(order, "toPick", false);
-                    }
-                    this.$forceUpdate();
+                    this.$refs.pickLocations.confirmUpdate();
                 });
         },
         updatePicks(_id) {
@@ -157,8 +150,8 @@ export default {
             </div>
         </b-tab>
         <b-tab title="Pick Locations" :disabled="!shouldShowPickLocations()" id="pick-locations">
-            <pick-locations :orderstopick="ordersToPick" :cardspicked="cardsPicked"
-                @modify-picked="modifyFound"></pick-locations>
+            <pick-locations :orderstopick="ordersToPick" :cardspicked="cardsPicked" @modify-picked="modifyFound"
+                ref="pickLocations"></pick-locations>
         </b-tab>
     </b-tabs>
 </template>

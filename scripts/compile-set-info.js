@@ -104,7 +104,8 @@ class CompileSetInfo {
             if (!card_info.games.includes("paper")) return;
             if (card_info.layout == "token") return;
 
-            const name = card_info.name;
+            var name = card_info.flavor_name;
+            if (name == null) name = card_info.name;
             if (!(name in cardData)) {
                 var priceDict = {};
                 priceDict[card_info.set] = this.get_card_price(card_info);
@@ -113,6 +114,7 @@ class CompileSetInfo {
                     sets: [card_info.set],
                     prices: priceDict
                 }
+                if (card_info.flavor_name != null) cardData[name].realName = card_info.name
             } else {
                 cardData[name].sets.push(card_info.set);
                 cardData[name].prices[card_info.set] = this.get_card_price(card_info);
