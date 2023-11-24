@@ -9,7 +9,22 @@
             "isBackground": true,
             "group": "build",
             "problemMatcher": [],
-            "label": "vuejs: start",
-        }
+            "label": "vue",
+        },
+        {
+            "type": "npm",
+            "script": "start",
+            "isBackground": true,
+            "group": "build",
+            "problemMatcher": [],
+            "label": "api",
+        },
+        {
+        "label": "start",
+        "dependsOn": [
+            "vue",
+            "api"
+        ]
+    }
     ]
 }

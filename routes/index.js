@@ -8,7 +8,7 @@ var base64url = require('base64url');
 
 
 var env_path = (process.env.NODE_ENV == 'production') ? ".env" : "dev.env";
-require('dotenv').config({path: env_path});
+require('dotenv').config({ path: env_path });
 
 //Mongoose
 var Order = require('../config/models/order').connection.model('Order');
@@ -23,7 +23,8 @@ async function getActiveOrders() {
 };
 
 async function getAllCardNames() {
-  let names = await CardMetadata.distinct('name');
+  let name_info = await CardMetadata.find({}).select('name realName').lean();
+  const names = name_info.map(obj => obj.realName !== null && obj.realName !== undefined ? `${obj.name} (${obj.realName})` : obj.name);
   return names;
 }
 
@@ -31,9 +32,18 @@ async function addCardMetadataToOrders(orders) {
   var order_info = orders.map(async function (order) {
     order_card_names = order.cards.map(card => card.name);
     card_metadata_docs = await CardMetadata.find({
-      'name': {
-        $in: order_card_names
-      }
+      $or: [
+        {
+          'name': {
+            $in: order_card_names
+          }
+        },
+        {
+          'realName': {
+            $in: order_card_names
+          }
+        }
+      ]
     }).lean();
     card_metadata = card_metadata_docs.reduce(function (data, card_doc) {
       data[card_doc.name] = card_doc;
@@ -43,6 +53,9 @@ async function addCardMetadataToOrders(orders) {
       card_doc = card_metadata[card.name];
       if (card_doc) {
         Object.assign(card, card_doc);
+        const flavorVersion = card_metadata_docs.find(obj => obj.realName === card.name);
+        card = { ...(flavorVersion ? { synonym: flavorVersion } : {}), ...card };
+
       } else {
         card.sets = []
         card.color = ""
@@ -87,20 +100,18 @@ router.get('/order', async function (req, res) {
 router.post('/order', async function (req, res) {
   var newOrder = req.body;
   Order.create(newOrder, async function (err, newOrderRecord) {
-    if (err) return res.send(400, err);
+    if (err) return res.status(400).send(err);
     var newOrderArr = await addCardMetadataToOrders([newOrderRecord.toObject()]);
     var newCardObj = newOrderArr[0];
-    return res.send(200, newCardObj);
+    return res.status(200).send(newCardObj);
   });
 });
 
 router.put('/order/:orderId', async function (req, res) {
-  let newOrderRecord = await Order.findByIdAndUpdate(req.params.orderId, req.body, {
+  await Order.findByIdAndUpdate(req.params.orderId, req.body, {
     new: true
   });
-  var newOrderArr = await addCardMetadataToOrders([newOrderRecord.toObject()]);
-  var newCardObj = newOrderArr[0];
-  return res.send(200, newCardObj);
+  return res.status(200).send();
 });
 
 

@@ -71,27 +71,7 @@ class BoxInventory {
         var result = []
         if (!cards) return result;
         var boxIndex = {};
-        const basicsBox = {name: "Basics", type: "basics", releaseDate: new Date(2099, 11, 31)};
-        cards.forEach((card, cardIdx) => {
-            if (["Plains", "Island", "Swamp", "Mountain", "Forest"].includes(card.name)) {
-                addToBoxIndex(basicsBox, card);
-                return;
-            }
-            card.sets.forEach(set => {
-                var set_type = this.getSetType(set);
-                if (!set_type) return;
-
-                var card_info = JSON.parse(JSON.stringify(card));
-                card_info.set = set;
-
-                this.boxes.filter(box => box.type == set_type).forEach(box => {
-                    if (this.boxHasCard(box, card_info)) {
-                        var name = box.name;
-                        addToBoxIndex(box, card_info)
-                    }
-                })
-            });
-        });
+        cards.forEach((card) => this.processCard(card, boxIndex));
 
         Object.entries(boxIndex).forEach(boxEntry => {
             let box_name = boxEntry[0];
@@ -130,12 +110,36 @@ class BoxInventory {
         })
         return result;
 
-        function addToBoxIndex(box, card_info) {
+        
+    }
+
+    processCard(card, boxIndex) {
+            const basicsBox = {name: "Basics", type: "basics", releaseDate: new Date(2099, 11, 31)};
+            if (["Plains", "Island", "Swamp", "Mountain", "Forest"].includes(card.name)) {
+                this.addToBoxIndex(boxIndex, basicsBox, card);
+                return;
+            }
+            card.sets.forEach(set => {
+                var set_type = this.getSetType(set);
+                if (!set_type) return;
+
+                var card_info = JSON.parse(JSON.stringify(card));
+                card_info.set = set;
+
+                this.boxes.filter(box => box.type == set_type).forEach(box => {
+                    if (this.boxHasCard(box, card_info)) {
+                        var name = box.name;
+                        this.addToBoxIndex(boxIndex, box, card_info)
+                    }
+                })
+            });
+        }
+
+    addToBoxIndex(boxIndex, box, card_info) {
             var name = box.name;
             if (!(name in boxIndex)) { boxIndex[name] = { cards: [], type: box.type, releaseDate: box.releaseDate }} 
             boxIndex[name].cards.push(card_info)
         }
-    }
 }
 
 module.exports = BoxInventory;

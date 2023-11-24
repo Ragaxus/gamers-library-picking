@@ -132,3 +132,4 @@ default-cards.json
 public/images/set-icons/*
 prod.env
 var/db/sessions.db
+dev.env

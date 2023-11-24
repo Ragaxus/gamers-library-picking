@@ -1,10 +1,12 @@
 {
   "version": "0.2.0",
   "configurations": [
+
+
     {
-      "type": "chrome",
+      "type": "firefox",
       "request": "launch",
-      "name": "vuejs: chrome",
+      "name": "vuejs: firefox",
       "url": "http://localhost:8081",
       //"webRoot": "${workspaceFolder}",
       "webRoot": "C:/Users/ragax/Repos",
@@ -19,7 +21,7 @@
         "/*": "*",
         "/./~/*": "${webRoot}/node_modules/*"
       },
-      "preLaunchTask": "vuejs: start"
+      "preLaunchTask": "start"
     }
   ]
 }

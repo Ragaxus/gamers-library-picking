@@ -26,6 +26,8 @@ export default {
             ],
             ascending: true,
             groupByType: true,
+            mostRecentlyUpdatedCard: null,
+            dotVisibility: {}
         }
     },
     computed: {
@@ -52,12 +54,12 @@ export default {
         priceData() {
             var availableSets = this.boxData.map(box => box.cards_by_set.map(setInfo => setInfo.set)).flat();
             var cardPrices = this.orderstopick.reduce((acc, order) => {
-                order.cards.filter(card => !!card.name).forEach(card => { 
+                order.cards.filter(card => !!card.name).forEach(card => {
                     acc[card.name] = card.prices;
                     var cheapestSet = Object.keys(card.prices)
-                      .filter(set => availableSets.includes(set) && !!card.prices[set])
-                      .sort((setA, setB) => card.prices[setA] - card.prices[setB])
-                      [0];
+                        .filter(set => availableSets.includes(set) && !!card.prices[set])
+                        .sort((setA, setB) => card.prices[setA] - card.prices[setB])
+                    [0];
                     acc[card.name]["cheapest"] = cheapestSet;
                 });
                 return acc;
@@ -86,7 +88,9 @@ export default {
                 this.boxData = response.data;
             });
         },
-        modifyPicked(name, amount) {
+        modifyPicked(line_data, amount) {
+            this.mostRecentlyUpdatedCard = line_data.join('-');
+            let name = line_data[2];
             let newVal = (name in this.cardspicked) ? this.cardspicked[name] : 0;
             newVal += amount;
             if (newVal < 0) newVal = 0;
@@ -112,7 +116,14 @@ export default {
                 .filter(order => order.cards.some(card => card.name === cardName))
                 .map(order => order.customer_name);
         },
-        toggleOrder() { this.ascending = !this.ascending; }
+        toggleOrder() { this.ascending = !this.ascending; },
+        confirmUpdate() {
+            this.$set(this.dotVisibility, this.mostRecentlyUpdatedCard, true);
+
+            setTimeout(() => {
+                this.$set(this.dotVisibility, this.mostRecentlyUpdatedCard, false);
+            }, 1300);
+        }
     },
     watch: {
         orderstopick(newVal, oldVal) { this.updateBoxIndex(); }
@@ -135,9 +146,14 @@ export default {
                         <h3>{{ color_lookup[boxsetcolor.color] }}:</h3>
                         <div class="card-in-orders" v-for="card in boxsetcolor.cards"
                             v-bind:class="{ completed: isCardCompleted(card), cheapest: isCheapest(card.name, boxset.set) }">
-                            <span>{{ card.name }} (${{ priceData[card.name][boxset.set] }}), {{ pickedStatus(card) }}</span>
-                            <button @click="modifyPicked(card.name, 1)">⬆️</button>
-                            <button @click="modifyPicked(card.name, -1)">⬇️</button>
+                            <div class="card-in-orders-display">
+                                <span>{{ card.name }} (${{ priceData[card.name][boxset.set] }}),
+                                    {{ pickedStatus(card) }}</span>
+                                <button @click="modifyPicked([boxinfo.box_name, boxset.set, card.name], 1)">⬆️</button>
+                                <button @click="modifyPicked([boxinfo.box_name, boxset.set, card.name], -1)">⬇️</button>
+                                <div v-if="dotVisibility[[boxinfo.box_name, boxset.set, card.name].join('-')]"
+                                    :class="'green-dot ' + [boxinfo.box_name, boxset.set, card.name].join('-')"></div>
+                            </div>
                             <ul class="card-in-orders-order-names">
                                 <li v-for="ordername in ordersOfCard(card.name)"> {{ ordername }} </li>
                             </ul>
@@ -149,6 +165,11 @@ export default {
     </div>
 </template>
 <style>
+.card-in-orders-display {
+    display: flex;
+    align-items: center;
+}
+
 .pick-locations-box {
     border: 1px solid black;
     margin: 10px;
@@ -166,5 +187,26 @@ div.cheapest span {
 
 .pick-locations button {
     margin-right: 5px;
+}
+
+.green-dot {
+    width: 10px;
+    height: 10px;
+    background: radial-gradient(circle, rgb(18, 229, 18) 50%, transparent 100%);
+    border-radius: 50%;
+    margin-left: 5px;
+    animation: fadeInOut 1.3s ease-out;
+}
+
+@keyframes fadeInOut {
+
+    0%,
+    100% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
 }
 </style>
