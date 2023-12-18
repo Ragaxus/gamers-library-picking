@@ -19,17 +19,48 @@ var SetDirectory = require('../config/models/set-directory').connection.model('S
 var BoxInventory = require('../utils/box-inventory');
 
 async function getActiveOrders() {
-  return await Order.find({}).where('status').nin(['sold', 'cancelled']).lean();
+  return await Order.find({
+    $or: [
+      { status: "placed" },
+      {
+        $and: [
+          { status: { $nin: ["sold", "cancelled"] } },
+          { created_date: { $gte: new Date(new Date() - 30 * 24 * 60 * 60 * 1000) } }
+        ]
+      }
+    ]
+  }).lean();
 };
 
 async function getAllCardNames() {
-  let name_info = await CardMetadata.find({}).select('name realName').lean();
-  const names = name_info.map(obj => obj.realName !== null && obj.realName !== undefined ? `${obj.name} (${obj.realName})` : obj.name);
-  return names;
+  let name_info = await CardMetadata.aggregate([
+    {
+      '$group': {
+        '_id': null,
+        'combinedNames': {
+          '$addToSet': '$name'
+        },
+        'combinedRealNames': {
+          '$addToSet': '$realName'
+        }
+      }
+    }, {
+      '$project': {
+        '_id': 0,
+        'names': {
+          '$concatArrays': [
+            '$combinedNames', '$combinedRealNames'
+          ]
+        }
+      }
+    }
+  ]);
+  return name_info[0].names;
 }
 
 async function addCardMetadataToOrders(orders) {
   var order_info = orders.map(async function (order) {
+    if (order.status !== "placed") return order;
     order_card_names = order.cards.map(card => card.name);
     card_metadata_docs = await CardMetadata.find({
       $or: [
