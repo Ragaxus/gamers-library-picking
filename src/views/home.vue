@@ -11,10 +11,8 @@ export default {
             { src: "https:/code.jquery.com/jquery-3.6.0.js"},
             { src: "https:/code.jquery.com/ui/1.13.2/jquery-ui.js"},
             { src: "https:/cdn.jsdelivr.net/npm/fuzzysort@2.0.4/fuzzysort.min.js", async: true, defer: true },
-            { src: "https:/cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js", async: true, defer: true }
         ],
         link: [
-            { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css' },
             { rel: 'stylesheet', href: '//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css' }
         ]
     },

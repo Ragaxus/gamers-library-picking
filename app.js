@@ -10,6 +10,7 @@ var SQLiteStore = require('connect-sqlite3')(session);
 var mongoose = require('mongoose');
 
 var indexRouter = require('./routes/index');
+var boxRouter = require('./routes/boxes');
 
 var expressVue = require('express-vue');
 
@@ -28,7 +29,7 @@ app.use(session({
 }))
 app.use(passport.authenticate('session'));
 
-app.use('/api/boxes', boxAdminRouter);
+app.use('/api/boxes', boxRouter);
 app.use('/api', indexRouter);
 
 if(process.env.NODE_ENV === 'production') {

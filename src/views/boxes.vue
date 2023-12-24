@@ -7,13 +7,13 @@
           <h2>{{ box.name }}</h2>
           <p>Type: {{ box.type }}</p>
           <p>Release Date: {{ box.releaseDate }}</p>
-          <p>
+          <p v-if="!!box.startCard">
             Start Card: {{ box.startCard.name }} ({{ box.startCard.set }})
           </p>
-          <p>
+          <p v-if="!!box.endCard">
             End Card: {{ box.endCard.name }} ({{ box.endCard.set }})
           </p>
-          <p>Sets: {{ box.sets.join(', ') }}</p>
+          <p v-if="!!box.sets && box.sets.length > 0">Sets: {{ box.sets.join(', ') }}</p>
         </div>
         <button @click="editBox(box)">Edit</button>
         <button @click="deleteBox(box._id)">Delete</button>
@@ -45,6 +45,12 @@
 
 <script>
 export default {
+  metaInfo: {
+        title: "Gamer's Library Orders",
+        script: [
+            { src: "https:/cdnjs.cloudflare.com/ajax/libs/axios/1.2.0/axios.min.js", async: true, defer: true },
+        ]
+    },
   data() {
     return {
       showModal: false,
@@ -65,7 +71,7 @@ export default {
     fetchBoxes() {
       // Use Axios or another HTTP library to make an API request
       // Replace 'api/boxes' with your actual API endpoint
-      axios.get('/api/boxes').then((response) => {
+      this.axios.get('/api/boxes').then((response) => {
         this.boxes = response.data;
       });
     },
