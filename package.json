@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
     "build_client": "vue-cli-service build",
-    "serve_client": "vue-cli-service serve --port 8081"
+    "serve_client": "vue-cli-service serve --port 8081",
+    "start": "node ./bin/www"
   },
   "dependencies": {
     "@vue/cli-service": "^5.0.8",
@@ -37,10 +37,14 @@
     "vue-axios": "^3.5.2",
     "vue-meta": "^2.4.0",
     "vue-mq": "^1.0.1",
-    "vue-router": "^3.6.5"
+    "vue-router": "^3.6.5",
+    "vuex": "^3.6.2"
   },
   "devDependencies": {
+    "@vue/cli-plugin-vuex": "~5.0.0",
     "babel-core": "^6.26.3",
-    "babel-preset-env": "^1.7.0"
+    "babel-preset-env": "^1.7.0",
+    "node-sass": "^9.0.0",
+    "sass-loader": "^13.3.2"
   }
 }

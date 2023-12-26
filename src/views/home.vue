@@ -1,6 +1,7 @@
 <script>
 import ViewOrders from "../components/ViewOrders.vue"
 import SubmitNewOrder from "../components/SubmitNewOrder.vue";
+import { mapState } from 'vuex';
 export default {
     name: 'Home',
     metaInfo: {
@@ -31,7 +32,6 @@ export default {
                 new_item_quantity: 0,
                 new_item_name: ""
             },
-            card_names: [],
             orders: [],
             search_criteria: {
                 showInactiveOrders: false
@@ -43,7 +43,6 @@ export default {
     },
     mounted() {
         this.axios.get('/api/init').then(res => {
-            this.card_names = res.data.card_names;
             this.orders = res.data.order_data;
             this.orders.forEach( order => {
                 if (order.toPick == null) this.$set(order, "toPick", false);
@@ -57,86 +56,27 @@ export default {
                this.orders.push(newOrder);
             }); 
         }
+    },
+    computed: {
+        ...mapState(['cardNames'])
     }
 }
 </script>
 <template>
     <div id="app" class="home">
         <button @click="showModal = true">New order</button>
-        <view-orders :displaycriteria="display_criteria" :orders="orders" :cardnames="card_names"></view-orders>
+        <view-orders :displaycriteria="display_criteria" :orders="orders" :cardnames="cardNames"></view-orders>
         <transition name="modal" v-if="showModal">
             <div class="modal-mask">
                 <div class="modal-wrapper">
-                    <submit-new-order class="modal-container" :cardnames="card_names" @new-order="addNewOrder"
+                    <submit-new-order class="modal-container" :cardnames="cardNames" @new-order="addNewOrder"
                         @close="showModal = false"></submit-new-order>
                 </div>
             </div>
         </transition>
     </div>
 </template>
-<style>
-.modal-mask {
-    position: fixed;
-    z-index: 99;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: table;
-    transition: opacity 0.3s ease;
-}
+<style lang="scss">
+@import '@/css/modals.scss';
 
-.modal-wrapper {
-    display: table-cell;
-    vertical-align: middle;
-}
-
-.modal-container {
-    width: 300px;
-    margin: 0px auto;
-    padding: 20px 30px;
-    background-color: #fff;
-    border-radius: 2px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
-    transition: all 0.3s ease;
-    font-family: Helvetica, Arial, sans-serif;
-    overflow-y: auto;
-}
-
-.modal-header h3 {
-    margin-top: 0;
-    color: #42b983;
-}
-
-.modal-body {
-    margin: 20px 0;
-}
-
-.modal-default-button {
-    float: right;
-}
-
-/*
- * The following styles are auto-applied to elements with
- * transition="modal" when their visibility is toggled
- * by Vue.js.
- *
- * You can easily play with the modal transition by editing
- * these styles.
- */
-
-.modal-enter {
-    opacity: 0;
-}
-
-.modal-leave-active {
-    opacity: 0;
-}
-
-.modal-enter .modal-container,
-.modal-leave-active .modal-container {
-    -webkit-transform: scale(1.1);
-    transform: scale(1.1);
-}
 </style>

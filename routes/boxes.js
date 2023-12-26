@@ -18,14 +18,12 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/:id', async (req, res) => {
-  // Implement your code for updating a box by ID and responding with JSON
   await Box.findByIdAndUpdate(req.params.id, req.body);
   var allBoxes = await Box.find({}).lean();
   res.send(JSON.stringify(allBoxes));
 });
 
 router.delete('/:id', async (req, res) => {
-  // Implement your code for deleting a box by ID and responding with JSON
   await Box.findByIdAndDelete(req.params.id);
   var allBoxes = await Box.find({}).lean();
   res.send(JSON.stringify(allBoxes));

@@ -2,54 +2,26 @@
   <div>
     <div>
       <!-- Display a list of boxes -->
-      <div v-for="box in boxes" :key="box._id">
-        <div>
-          <h2>{{ box.name }}</h2>
-          <p>Type: {{ box.type }}</p>
-          <p>Release Date: {{ box.releaseDate }}</p>
-          <p v-if="!!box.startCard">
-            Start Card: {{ box.startCard.name }} ({{ box.startCard.set }})
-          </p>
-          <p v-if="!!box.endCard">
-            End Card: {{ box.endCard.name }} ({{ box.endCard.set }})
-          </p>
-          <p v-if="!!box.sets && box.sets.length > 0">Sets: {{ box.sets.join(', ') }}</p>
-        </div>
-        <button @click="editBox(box)">Edit</button>
-        <button @click="deleteBox(box._id)">Delete</button>
-      </div>
-    </div>
-    <button @click="showCreateForm">Create New Box</button>
+      <Box v-for="box in boxes" :key="box._id" :box-info="box">
+      </Box>
+      <button @click="showCreateForm">Create New Box</button>
 
-    <!-- Modal for creating/editing a box -->
-    <div v-if="showModal">
-      <div class="modal">
-        <h2 v-if="editing">Edit Box</h2>
-        <h2 v-else>Create New Box</h2>
-        <form @submit.prevent="saveBox">
-          <input type="text" v-model="boxData.name" placeholder="Name" />
-          <input type="text" v-model="boxData.type" placeholder="Type" />
-          <input type="date" v-model="boxData.releaseDate" placeholder="Release Date" />
-          <input type="text" v-model="boxData.startCard.name" placeholder="Start Card Name" />
-          <input type="text" v-model="boxData.startCard.set" placeholder="Start Card Set" />
-          <input type="text" v-model="boxData.endCard.name" placeholder="End Card Name" />
-          <input type="text" v-model="boxData.endCard.set" placeholder="End Card Set" />
-          <input type="text" v-model="boxData.sets" placeholder="Sets (comma-separated)" />
-          <button type="submit">{{ editing ? "Update" : "Create" }}</button>
-          <button @click="cancelEdit">Cancel</button>
-        </form>
-      </div>
+
     </div>
   </div>
 </template>
 
 <script>
+import Box from '../components/Box.vue'
 export default {
   metaInfo: {
-        title: "Gamer's Library Orders",
-        script: [
-            { src: "https:/cdnjs.cloudflare.com/ajax/libs/axios/1.2.0/axios.min.js", async: true, defer: true },
-        ]
+    title: "Gamer's Library Boxes",
+    script: [
+      { src: "https:/cdnjs.cloudflare.com/ajax/libs/axios/1.2.0/axios.min.js", async: true, defer: true },
+    ]
+  },   
+  components: {
+        Box: Box 
     },
   data() {
     return {
@@ -131,6 +103,6 @@ export default {
 };
 </script>
 
-<style scoped>
-/* Add your CSS styling here */
+<style lang="scss" scoped>
+@import '@/css/modals.scss';
 </style>

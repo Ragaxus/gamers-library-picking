@@ -8,6 +8,8 @@ import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import Meta from 'vue-meta'
+import store from './store'
+import { mapState, mapActions } from 'vuex';
 
 Vue.config.productionTip = false
 Vue.use(VueAxios, axios);
@@ -23,4 +25,9 @@ const routes = [
 const router = new VueRouter({routes})
 
 const app = new Vue({
-  router}).$mount('#app')
+  store,
+  router,
+  computed: { ...mapState(['cardNames']), },
+  methods: { ...mapActions(['fetchList']), },
+  mounted: function () { this.fetchList(); }
+}).$mount('#app')

@@ -59,15 +59,15 @@ async function addCardMetadataToOrders(orders) {
 router.get('/init', async function (req, res, next) {
   var orders = await getActiveOrders();
   var order_data = await addCardMetadataToOrders(orders);
-  var card_names = await getAllCardNames();
   const data = {
-    card_names,
     order_data
   }
   res.send(data);
 });
 
-
+router.get('/cardNames', async function (req, res, next) {
+  res.send(await getAllCardNames());
+});
 
 router.get('/order', async function (req, res) {
   try {
