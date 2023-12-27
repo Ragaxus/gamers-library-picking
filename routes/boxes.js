@@ -8,6 +8,7 @@ var Box = require('../config/models/box').connection.model('Box');
 // Define the routes for CRUD operations
 router.get('/', async (req, res) => {
   var allBoxes = await Box.find({}).lean();
+  allBoxes.forEach(box => box.releaseDate = new Date(box.releaseDate).toISOString().slice(0,10));
   res.send(JSON.stringify(allBoxes));
 });
 

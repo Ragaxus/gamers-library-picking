@@ -31,3 +31,4 @@ const app = new Vue({
   methods: { ...mapActions(['fetchList']), },
   mounted: function () { this.fetchList(); }
 }).$mount('#app')
+router.replace('/home');

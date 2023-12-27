@@ -39,10 +39,7 @@ export default {
     };
   },
   methods: {
-    // Fetch boxes from your MongoDB database (add the API endpoint)
     fetchBoxes() {
-      // Use Axios or another HTTP library to make an API request
-      // Replace 'api/boxes' with your actual API endpoint
       this.axios.get('/api/boxes').then((response) => {
         this.boxes = response.data;
       });
@@ -62,12 +59,6 @@ export default {
           this.showModal = false;
         });
       }
-    },
-    // Edit a box
-    editBox(box) {
-      this.editing = true;
-      this.boxData = { ...box };
-      this.showModal = true;
     },
     // Delete a box
     deleteBox(boxId) {

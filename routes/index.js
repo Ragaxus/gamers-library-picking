@@ -8,7 +8,7 @@ var base64url = require('base64url');
 
 
 var env_path = (process.env.NODE_ENV == 'production') ? ".env" : "dev.env";
-require('dotenv').config({path: env_path});
+require('dotenv').config({ path: env_path });
 
 //Mongoose
 var Order = require('../config/models/order').connection.model('Order');
@@ -110,6 +110,18 @@ router.post('/box-locations', async function (req, res) {
   boxInventory.boxes = await Box.find({}).lean();
   let result = boxInventory.findCardsInBoxes(req.body.cards);
   res.send(result);
+});
+
+router.get('/card', async function (req, res) {
+  var cardName = req.query.name;
+  let card = await CardMetadata.findOne({
+    $or: [
+      { name: { $regex: new RegExp(cardName, 'i') } }, // Case-insensitive match
+      { name: { $regex: new RegExp(`${cardName} // .*`, 'i') } }
+    ]
+  }).lean();
+  if (!card) res.status(500).send("Card not found");
+  res.send(card);
 });
 
 module.exports = router;
