@@ -116,7 +116,7 @@ export default {
         <div id="newItem">
             <input id="new-item-quantity" size="2" @keyup.enter="addItem" v-model="new_item.new_item_quantity" />
             <!-- <input id="new-item-name" @keyup.enter="addItem" v-model="new_item.new_item_name" /> -->
-            <CardNameInput id="new-item-name" @keyup.enter="addItem" v-model="new_item.new_item_name" />
+            <CardNameInput @keyup.enter="addItem" v-model="new_item.new_item_name" />
             <button @click="addItem" :disabled='this.new_item.new_item_name == ""'>+</button>
         </div>
         <div id="massEntry">

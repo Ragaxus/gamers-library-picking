@@ -2,27 +2,38 @@
   <div>
     <div>
       <!-- Display a list of boxes -->
-      <Box v-for="box in boxes" :key="box._id" :box-info="box">
-      </Box>
+      <Box v-for="box in boxes" :key="box._id" :box-info="box" @delete="deleteBox" @save="saveBox" />
       <button @click="showCreateForm">Create New Box</button>
-
-
+      <transition name="modal" v-if="showModal">
+        <div class="modal-mask">
+          <div class="modal-wrapper">
+            <Box class="modal-container" :box-info="boxData" :isEditOnly="true" @delete="showModal = false"
+              @save="saveBox" />
+          </div>
+        </div>
+      </transition>
     </div>
   </div>
 </template>
 
 <script>
 import Box from '../components/Box.vue'
+import { mapState } from 'vuex';
 export default {
   metaInfo: {
     title: "Gamer's Library Boxes",
     script: [
       { src: "https:/cdnjs.cloudflare.com/ajax/libs/axios/1.2.0/axios.min.js", async: true, defer: true },
+      { src: "https:/code.jquery.com/jquery-3.6.0.js" },
+      { src: "https:/code.jquery.com/ui/1.13.2/jquery-ui.js" },
+    ],
+    link: [
+      { rel: 'stylesheet', href: '//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css' }
     ]
-  },   
+  },
   components: {
-        Box: Box 
-    },
+    Box: Box
+  },
   data() {
     return {
       showModal: false,
@@ -44,16 +55,14 @@ export default {
         this.boxes = response.data;
       });
     },
-    // Create or update a box
-    saveBox() {
-      if (this.editing) {
-        // Update existing box (add the API endpoint)
-        axios.put(`/api/boxes/${box._id}`, this.boxData).then(() => {
+    saveBox(boxInfo) {
+      if (boxInfo._id !== undefined) {
+        axios.put('/api/boxes/' + boxInfo._id).then(() => {
           this.fetchBoxes();
           this.showModal = false;
         });
-      } else {
-        // Create a new box (add the API endpoint)
+      }
+      else {
         axios.post('/api/boxes', this.boxData).then(() => {
           this.fetchBoxes();
           this.showModal = false;

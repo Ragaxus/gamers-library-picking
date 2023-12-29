@@ -8,11 +8,15 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     cardNames: [],
+    setDirectory: {},
   },
   mutations: {
     setList(state, newList) {
       state.cardNames = newList;
     },
+    setSetDirectory(state, newSetDirectory) {
+      state.setDirectory = newSetDirectory;
+    }
   },
   actions: {
     async fetchList({ commit }) {
@@ -23,5 +27,9 @@ export default new Vuex.Store({
         console.error('Error fetching data:', error);
       }
     },
+    async fetchSetDirectory({ commit }) { 
+      const response = await axios.get('/api/setDirectory');
+      commit('setSetDirectory', response.data);
+    }
   },
 });

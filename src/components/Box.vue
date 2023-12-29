@@ -3,11 +3,16 @@
 import SetBadge from "./SetBadge.vue"
 import CardNameInput from "./CardNameInput.vue";
 import axios from "axios";
+import { mapState } from "vuex";
+
 
 export default {
     props: {
         boxInfo: {
             type: Object
+        },
+        isEditOnly: {
+            type: Boolean
         }
     },
     components: {
@@ -17,9 +22,10 @@ export default {
     data() {
         return {
             box: {},
-            editing: false,
+            editing: this.isEditOnly || false,
             startCardSetOptions: [],
             endCardSetOptions: [],
+            currentSetToAdd: ""
         }
     },
     methods: {
@@ -27,24 +33,44 @@ export default {
             var resp = await this.axios.get(`api/card?name=${cardName}`);
             return resp.data;
         },
-        saveBox: async function() {
-            this.editing = false;
-            await this.axios.put(`api/boxes/${this.boxInfo._id}`, this.boxInfo);
+        saveBox: async function () {
+            this.$emit('save', this.boxInfo);
         },
-        updateCardBoundary: async function(cardName, target) {
-            const {color, sets} = await this.getInfoForCard(cardName);
+        updateCardBoundary: async function (cardName, target) {
+            const { color, sets } = await this.getInfoForCard(cardName);
             if (target === 'start') {
                 this.startCardSetOptions = sets;
                 this.box.startCard.color = color;
             }
-            else { 
+            else {
                 this.endCardSetOptions = sets;
                 this.box.endCard.color = color;
             }
+        },
+        addCardBoundaries: function () {
+            this.box.startCard = { color: "", set: "", name: "" }
+            this.box.endCard = { color: "", set: "", name: "" }
+        },
+        removeCardBoundaries: function (box) {
+            delete this.box.startCard;
+            delete this.box.endCard;
+        },
+        removeSet: function (box, idx) {
+            box.sets.splice(idx, 1);
+        },
+        addSet: function (box) {
+            box.sets.push(this.currentSetToAdd);
+            this.currentSetToAdd = "";
+        },
+        deleteBox: function () {
+            this.$emit('delete', this.box._id);
+        },
+        cancelEdit: function () {
+            if (this.isEditOnly) this.deleteBox(); else editing = false;
         }
     },
-    mounted() { 
-        this.box = this.boxInfo; 
+    mounted() {
+        this.box = this.boxInfo;
     },
     watch: {
         box: {
@@ -57,6 +83,12 @@ export default {
                 }
             },
             deep: true
+        }
+    },
+    computed: {
+        ...mapState(['setDirectory']),
+        boxSetOptions() {
+            return this.setDirectory[this.box.type]
         }
     }
 }
@@ -78,7 +110,7 @@ export default {
                 <p v-if="!!box.sets && box.sets.length > 0">Sets: {{ box.sets.join(', ') }}</p>
             </div>
             <button @click="editing = true">Edit</button>
-            <button @click="deleteBox(box._id)">Delete</button>
+            <button @click="deleteBox">Delete</button>
         </div>
         <div name="editBoxInfo" v-if="editing">
             <input v-model="box.name" />
@@ -89,7 +121,7 @@ export default {
                 </select>
             </p>
             <p>Release Date: <input type="date" v-model="box.releaseDate" /></p>
-            <p v-if="!!box.startCard">
+            <div v-if="box.startCard !== undefined">
                 <div class="card-row">
                     <CardNameInput v-model="box.startCard.name" @input="updateCardBoundary(box.startCard.name, 'start')" />
                     <input list="start-card-sets" v-model="box.startCard.set">
@@ -104,49 +136,33 @@ export default {
                         <option v-for="set in this.endCardSetOptions" :value="set" />
                     </datalist>
                 </div>
-            </p>
-            <p v-if="!!box.sets">
-                <SetBadge v-for="set in box.sets" :set="set" />
-            </p>
+                <button @click="removeCardBoundaries">Remove card boundaries</button>
+            </div>
+            <div v-else>
+                <button @click="addCardBoundaries">Add card boundaries</button>
+            </div>
+            <div v-if="!!box.sets" class="set-badges">
+                <div v-for="(set, idx) in box.sets">
+                    <SetBadge :set="set" />
+                    <button @click="removeSet(box, idx)">X</button>
+                </div>
+                <div class="addSet">
+                    <input list="box-sets" v-model="currentSetToAdd">
+                    <datalist id="box-sets">
+                        <option v-for="set in this.boxSetOptions" :value="set" />
+                    </datalist>
+                    <button @click="addSet(box)">Add set</button>
+                </div>
+            </div>
             <button @click="saveBox">Save</button>
+            <button @click="cancelEdit">Cancel</button>
         </div>
     </article>
 </template>
 
 <style>
-div.card-row {
-    display: flex;
-}
-
-div.order-view {
-    border: 1px solid black;
-    width: 500px;
-}
-
-div.order-card-summary {
-    display: flex;
-}
-
-div.order-card-summary input {
-    width: 30px;
-}
-
 .set-badges {
     display: flex;
     overflow-x: auto;
-}
-
-div.status-picked {
-    background: gold;
-}
-
-div.status-sold {
-    background: #000;
-    color: #fff;
-}
-
-div.status-cancelled {
-    background: #000;
-    color: #fff;
 }
 </style>

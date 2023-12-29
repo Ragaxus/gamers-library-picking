@@ -8,9 +8,6 @@ export default {
         var component = this;
         $(`#${this._uid}`).autocomplete({
             minLength: 3,
-            // select: function (event, ui) {
-            // new_item.new_item_name = ui.item.value;
-            // },
             select: function (event, ui) {
                 var name = ui.item.value;
                 component.$emit('input', name);

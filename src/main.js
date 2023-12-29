@@ -27,8 +27,8 @@ const router = new VueRouter({routes})
 const app = new Vue({
   store,
   router,
-  computed: { ...mapState(['cardNames']), },
-  methods: { ...mapActions(['fetchList']), },
-  mounted: function () { this.fetchList(); }
+  computed: { ...mapState(['cardNames']), ...mapState(['setDirectory']) },
+  methods: { ...mapActions(['fetchList']), ...mapActions(['fetchSetDirectory']) },
+  mounted: function () { this.fetchList(); this.fetchSetDirectory(); },
 }).$mount('#app')
 router.replace('/home');

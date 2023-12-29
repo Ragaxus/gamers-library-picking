@@ -124,4 +124,9 @@ router.get('/card', async function (req, res) {
   res.send(card);
 });
 
+router.get('/setDirectory', async function (req, res) {
+  let setD = await SetDirectory.findOne({});
+  res.send(setD);  
+});
+
 module.exports = router;
