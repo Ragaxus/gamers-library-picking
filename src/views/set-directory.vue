@@ -3,7 +3,7 @@ import { mapState } from 'vuex';
 export default {
     data() {
         return {
-            currentSetType: "",
+            currentSetType: "standard",
             currentEditing: "",
             currentSet: ""
         }
@@ -54,3 +54,12 @@ export default {
         </div>
     </div>
 </template>
+<style>
+  .set-of-type {
+    display: flex;
+    margin-top: 5px;
+  }
+  .set-of-type button {
+    margin-left: 5px;
+  }
+</style>
