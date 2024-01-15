@@ -103,15 +103,15 @@ async function addCardMetadataToOrders(orders) {
 router.get('/init', async function (req, res, next) {
   var orders = await getActiveOrders();
   var order_data = await addCardMetadataToOrders(orders);
-  var card_names = await getAllCardNames();
   const data = {
-    card_names,
     order_data
   }
   res.send(data);
 });
 
-
+router.get('/cardNames', async function (req, res, next) {
+  res.send(await getAllCardNames());
+});
 
 router.get('/order', async function (req, res) {
   try {
@@ -153,5 +153,27 @@ router.post('/box-locations', async function (req, res) {
   let result = boxInventory.findCardsInBoxes(req.body.cards);
   res.send(result);
 });
+
+router.get('/card', async function (req, res) {
+  var cardName = req.query.name;
+  let card = await CardMetadata.findOne({
+    $or: [
+      { name: { $regex: new RegExp(cardName, 'i') } }, // Case-insensitive match
+      { name: { $regex: new RegExp(`${cardName} // .*`, 'i') } }
+    ]
+  }).lean();
+  if (!card) res.status(500).send("Card not found");
+  res.send(card);
+});
+
+router.get('/setDirectory', async function (req, res) {
+  let setD = await SetDirectory.findOne({});
+  res.send(setD);  
+});
+
+router.post('/setDirectory', async function (req, res) {
+  await SetDirectory.findOneAndReplace({}, req.body);
+  res.status(200);
+})
 
 module.exports = router;

@@ -1,7 +1,7 @@
 <script>
 
 import OrderEntry from "../components/OrderEntry.vue"
-
+import CardNameInput from "../components/CardNameInput.vue"
 
 export default {
     data: function () {
@@ -19,23 +19,16 @@ export default {
             mass_entry: ''
         }
     },
-    components: { OrderEntry: OrderEntry },
+    components: { 
+        OrderEntry: OrderEntry,
+        CardNameInput: CardNameInput,
+    },
     props: ["cardnames", "existingOrder"],
     mounted: function () {
         if (this.existingOrder) this.order = this.existingOrder;
         var names = this.cardnames;
         var new_item = this.new_item;
-        $("#new-item-name").autocomplete({
-            minLength: 3,
-            select: function (event, ui) {
-                new_item.new_item_name = ui.item.value;
-            },
-            source: function (req, respCallback) {
-                const results = fuzzysort.go(req.term, names, { limit: 5 })
-                    .map(r => r.target);
-                respCallback(results);
-            }
-        });
+
     },
 
     computed: {
@@ -122,7 +115,8 @@ export default {
         </div>
         <div id="newItem">
             <input id="new-item-quantity" size="2" @keyup.enter="addItem" v-model="new_item.new_item_quantity" />
-            <input id="new-item-name" @keyup.enter="addItem" v-model="new_item.new_item_name" />
+            <!-- <input id="new-item-name" @keyup.enter="addItem" v-model="new_item.new_item_name" /> -->
+            <CardNameInput @keyup.enter="addItem" v-model="new_item.new_item_name" />
             <button @click="addItem" :disabled='this.new_item.new_item_name == ""'>+</button>
         </div>
         <div id="massEntry">
@@ -130,7 +124,7 @@ export default {
             <button @click="massEntry"> Process </button>
         </div>
         <div id="comment">
-            <label for="comment">Additional notes: </label>
+            <label for="txtComment">Additional notes: </label>
             <textarea id="txtComment" v-model="order.comment"></textarea>
         </div>
         <button id="btnSubmit" @click="submit" :disabled=orderIsInvalid>Submit Order</button>
