@@ -2,7 +2,7 @@
   <div>
     <div>
       <!-- Display a list of boxes -->
-      <Box v-for="box in boxes" :key="box._id" :box-info="box" @delete="deleteBox" @save="saveBox" />
+      <Box v-for="box in sortedBoxes" :key="box._id" :box-info="box" @delete="deleteBox" @save="saveBox" />
       <button @click="showCreateForm">Create New Box</button>
       <transition name="modal" v-if="showModal">
         <div class="modal-mask">
@@ -43,8 +43,8 @@ export default {
         name: "",
         type: "",
         releaseDate: "",
-        startCard: { name: "", set: "" },
-        endCard: { name: "", set: "" },
+        startCard: undefined,
+        endCard: undefined,
         sets: "",
       },
     };
@@ -86,8 +86,8 @@ export default {
         name: "",
         type: "",
         releaseDate: "",
-        startCard: { name: "", set: "" },
-        endCard: { name: "", set: "" },
+        startCard: undefined,
+        endCard: undefined,
         sets: "",
       };
       this.showModal = true;
@@ -100,6 +100,11 @@ export default {
   created() {
     this.fetchBoxes();
   },
+  computed: {
+    sortedBoxes() {
+      return this.boxes.sort((a,b) => {return new Date(a.releaseDate) - new Date(b.releaseDate)});
+    }
+  }
 };
 </script>
 

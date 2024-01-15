@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from './views/home.vue'
 import Boxes from './views/boxes.vue'
+import SetDirectory from './views/set-directory.vue'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import BootstrapVue from 'bootstrap-vue'
@@ -20,6 +21,7 @@ Vue.use(VueRouter);
 const routes = [
   {path: '/home', component: Home},
   {path: '/boxes', component: Boxes},
+  {path: '/setdirectory', component: SetDirectory},
 ]
 
 const router = new VueRouter({routes})
