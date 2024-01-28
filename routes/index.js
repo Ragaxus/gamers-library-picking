@@ -131,7 +131,7 @@ router.get('/setDirectory', async function (req, res) {
 
 router.post('/setDirectory', async function (req, res) {
   await SetDirectory.findOneAndReplace({}, req.body);
-  res.status(200);
+  res.status(200).send();
 })
 
 module.exports = router;
