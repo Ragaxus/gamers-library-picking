@@ -74,12 +74,14 @@ export default {
                 let typeB = this.types.indexOf(b.type);
                 if (this.groupByType && typeA !== typeB) return typeA - typeB;
                 // if the type is the same, compare the release date
+                let releaseDateA = (a.releaseDate) ? a.releaseDate : new Date("1/1/1970").toISOString();
+                let releaseDateB = (b.releaseDate) ? b.releaseDate : new Date("1/1/1970").toISOString();
                 if (this.ascending) {
-                    return a.releaseDate.localeCompare(b.releaseDate);
+                    return releaseDateA.localeCompare(releaseDateB);
                 } else {
-                    return b.releaseDate.localeCompare(a.releaseDate);
+                    return releaseDateB.localeCompare(releaseDateA);
                 }
-            });
+        });
         }
     },
     methods: {
