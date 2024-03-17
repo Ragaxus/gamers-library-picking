@@ -57,7 +57,7 @@ export default {
     },
     saveBox(boxInfo) {
       if (boxInfo._id !== undefined) {
-        axios.put('/api/boxes/' + boxInfo._id).then(() => {
+        axios.put('/api/boxes/' + boxInfo._id, boxInfo).then(() => {
           this.fetchBoxes();
           this.showModal = false;
         });

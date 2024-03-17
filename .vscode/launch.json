@@ -1,27 +1,23 @@
 {
   "version": "0.2.0",
   "configurations": [
-
-
     {
       "type": "firefox",
       "request": "launch",
       "name": "vuejs: firefox",
+      "reAttach": true,
       "url": "http://localhost:8081",
-      //"webRoot": "${workspaceFolder}",
-      "webRoot": "C:/Users/ragax/Repos",
-      "breakOnLoad": true,
-      "pathMapping": {
-        "/_karma_webpack_": "${workspaceFolder}",
-      },
-      "sourceMapPathOverrides": {
-        "webpack:/*": "${webRoot}/*",
-        // "/./*": "${webRoot}/*",
-        //"/src/*": "${webRoot}/*",
-        "/*": "*",
-        "/./~/*": "${webRoot}/node_modules/*"
-      },
-      "preLaunchTask": "start"
+      "webRoot": "${workspaceFolder}/src",
+      "pathMappings": [
+        {
+          "url": "webpack://gamers-library-picking/src",
+          "path": "${workspaceFolder}/src"
+        },
+        {
+          "url": "webpack:///src/",
+          "path": "{webRoot}/"
+        }
+      ]
     }
   ]
 }

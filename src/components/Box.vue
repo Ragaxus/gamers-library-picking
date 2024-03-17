@@ -35,7 +35,8 @@ export default {
         },
         saveBox: async function () {
             this.editing = !this.editing;
-            this.$emit('save', this.boxInfo);
+            console.log(this.box);
+            this.$emit('save', this.box);
         },
         updateCardBoundary: async function (cardName, target) {
             const { color, sets } = await this.getInfoForCard(cardName);
